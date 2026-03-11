@@ -1,6 +1,14 @@
 #############################################################
 # StatsPackage Cheat Sheet
-devtools::install("StatsPackage")
+pkg_dir <- if (dir.exists("StatsPackage")) {
+  "StatsPackage"
+} else if (dir.exists("StatsPackage -1.0")) {
+  "StatsPackage -1.0"
+} else {
+  stop("Could not find package directory. Expected 'StatsPackage' or 'StatsPackage -1.0'.")
+}
+
+devtools::install(pkg_dir)
 library(StatsPackage)
 #############################################################
 defs <- list(
