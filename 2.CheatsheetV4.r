@@ -355,9 +355,6 @@ var_test_chisq(s = 4.2, n = 12, sigma0 = 5)
 # Two-sample F test for ratio of variances
 var_test_chisq(s = c(4.2, 5.0), n = c(12, 10), ratio0 = 1)
 
-var_test_chisq(s = 4.2, n = 12, sigma0 = 5, alternative = "two.sided")
-var_test_chisq(s = c(4.2, 5.0), n = c(12, 10), ratio0 = 1, alternative = "two.sided")
-
 #############################################################
 ## Categorical Data / Chi-Square ----
 #############################################################
@@ -526,20 +523,17 @@ chisq_table(spirituality_tab, type = "homogeneity")
 #   one-sample : scalar mu_a, sigma, n
 #   two-sample : length-2 mu_a, sigma, n
 #############################################################
-# Default equality test planning: pooled, no continuity correction
-power_p_z(p_a = c(0.20, 0.30), p0 = 0, n = c(150, 150))
-n_required_p_z(p_a = c(0.20, 0.30), p0 = 0,
-               alpha = 0.05, beta_target = 0.10)
 
-# Explicit conservative version
-power_p_z(p_a = c(0.20, 0.30), p0 = 0, n = c(150, 150), continuity = TRUE)
-n_required_p_z(p_a = c(0.20, 0.30), p0 = 0,
-               alpha = 0.05, beta_target = 0.10, continuity = TRUE)
+# One-sample z power
+power_z_mu(mu_a = 103, mu0 = 100, sigma = 10, n = 64)
 
-# Nonzero null difference: default unpooled, no continuity correction
-power_p_z(p_a = c(0.35, 0.24), p0 = 0.05, n = c(100, 100))
-n_required_p_z(p_a = c(0.35, 0.24), p0 = 0.05,
-               alpha = 0.05, beta_target = 0.10)
+# Two-sample z power (known sigmas)
+power_z_mu(mu_a = c(82, 77), mu0 = 0, sigma = c(12, 10), n = c(64, 49),
+           alternative = "two.sided")
+
+# One-sample one-sided z power
+power_z_mu(mu_a = 30500, mu0 = 30000, sigma = 1500, n = 75,
+           alpha = 0.01, alternative = "greater")
 #############################################################
 # power_t_mu(
 #   mu_a,
@@ -594,18 +588,18 @@ power_t_mu(mu_a = -1.1, mu0 = 0, sigma_true = 2.0, n = 16, paired = TRUE)
 # One-sample power
 power_p_z(p_a = 0.30, p0 = 0.25, n = 200)
 
-# Two-sample power: default behavior under p0 = 0
+# Two-sample power: default behavior under p0 = 0 (pooled, no continuity correction)
 power_p_z(p_a = c(0.20, 0.30), p0 = 0, n = c(150, 150))
-
-# Two-sample power: explicitly pooled
-power_p_z(p_a = c(0.20, 0.30), p0 = 0, n = c(150, 150), pooled = TRUE)
 
 # Two-sample power: explicitly unpooled
 power_p_z(p_a = c(0.20, 0.30), p0 = 0, n = c(150, 150), pooled = FALSE)
 
-# Two-sample power without continuity correction
-power_p_z(p_a = c(0.20, 0.30), p0 = 0, n = c(150, 150),
-          pooled = TRUE, continuity = FALSE)
+# Two-sample power with continuity correction.
+# Appropriate when n is moderate and a more conservative normal approximation is preferred.
+power_p_z(p_a = c(0.20, 0.30), p0 = 0, n = c(40, 40), continuity = TRUE)
+
+# Nonzero null difference: default unpooled, no continuity correction
+power_p_z(p_a = c(0.35, 0.24), p0 = 0.05, n = c(100, 100))
 #############################################################
 # power_var_chisq(
 #   sigma_a,
@@ -762,15 +756,21 @@ n_required_p_z(p_a = c(0.20, 0.30), p0 = 0,
                alpha = 0.05, beta_target = 0.10,
                alternative = "two.sided", n_ratio = 1)
 
-# Two-sample required n: explicitly pooled
-n_required_p_z(p_a = c(0.20, 0.30), p0 = 0,
-               alpha = 0.05, beta_target = 0.10,
-               alternative = "two.sided", pooled = TRUE, n_ratio = 1)
-
 # Two-sample required n: explicitly unpooled
 n_required_p_z(p_a = c(0.20, 0.30), p0 = 0,
                alpha = 0.05, beta_target = 0.10,
                alternative = "two.sided", pooled = FALSE, n_ratio = 1)
+
+# Two-sample required n with continuity correction.
+# Appropriate when n is moderate and conservative planning is preferred.
+n_required_p_z(p_a = c(0.20, 0.30), p0 = 0,
+               alpha = 0.05, beta_target = 0.10,
+               alternative = "two.sided", continuity = TRUE, n_ratio = 1)
+
+# Two-sample required n for a nonzero null difference (defaults unpooled)
+n_required_p_z(p_a = c(0.35, 0.24), p0 = 0.05,
+               alpha = 0.05, beta_target = 0.10,
+               alternative = "two.sided")
 #############################################################
 # n_required_var_chisq(
 #   sigma_a,
