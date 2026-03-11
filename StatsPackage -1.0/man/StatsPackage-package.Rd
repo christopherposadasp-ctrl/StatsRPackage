@@ -11,6 +11,7 @@ Statistical functions for introductory inference and design.
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://christopherposadasp-ctrl.github.io/StatsRPackage/}
   \item \url{https://github.com/christopherposadasp-ctrl/StatsRPackage}
   \item Report bugs at \url{https://github.com/christopherposadasp-ctrl/StatsRPackage/issues}
 }
