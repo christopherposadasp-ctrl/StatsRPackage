@@ -114,6 +114,9 @@ ci_mu(xbar = -1.4, n = 18, s = 2.2, paired = TRUE)
 # One-sided lower CI
 ci_mu(xbar = 5.2, n = 25, s = 1.8, side = "lower")
 
+# One-sided upper CI
+ci_mu(xbar = 5.2, n = 25, s = 1.8, side = "upper")
+
 #############################################################
 ## CI for Proportion -----
 # ci_p(
@@ -286,6 +289,9 @@ z_test_mu(xbar = 30500, mu0 = 30000, sigma = 1500, n = 75,
 # One-sample t test
 t_test_mu(xbar = 5.4, mu0 = 5, s = 1.2, n = 20)
 
+# One-sample one-sided t test
+t_test_mu(xbar = 5.4, mu0 = 5, s = 1.2, n = 20, alternative = "greater")
+
 # Two-sample Welch t test
 t_test_mu(xbar = c(10, 8), mu0 = 0, s = c(3, 2.5), n = c(20, 18), var.equal = FALSE)
 
@@ -321,6 +327,9 @@ t_test_mu(xbar = -1.2, mu0 = 0, s = 2.4, n = 16, paired = TRUE)
 # One-sample exact
 p_test(x = 21, n = 100, p0 = 0.20)
 
+# One-sample one-sided exact test
+p_test(x = 21, n = 100, p0 = 0.20, alternative = "greater")
+
 # Two-sample equality test: default pooled, no continuity correction
 p_test(x = c(35, 24), n = c(100, 100), p0 = 0)
 
@@ -354,6 +363,12 @@ var_test_chisq(s = 4.2, n = 12, sigma0 = 5)
 
 # Two-sample F test for ratio of variances
 var_test_chisq(s = c(4.2, 5.0), n = c(12, 10), ratio0 = 1)
+
+# One-sample one-sided variance test
+var_test_chisq(s = 4.2, n = 12, sigma0 = 5, alternative = "greater")
+
+# Two-sample one-sided F test
+var_test_chisq(s = c(4.2, 5.0), n = c(12, 10), ratio0 = 1, alternative = "less")
 
 #############################################################
 ## Categorical Data / Chi-Square ----
@@ -600,6 +615,9 @@ power_p_z(p_a = c(0.20, 0.30), p0 = 0, n = c(40, 40), continuity = TRUE)
 
 # Nonzero null difference: default unpooled, no continuity correction
 power_p_z(p_a = c(0.35, 0.24), p0 = 0.05, n = c(100, 100))
+
+# Two-sample one-sided power
+power_p_z(p_a = c(0.35, 0.24), p0 = 0, n = c(100, 100), alternative = "greater")
 #############################################################
 # power_var_chisq(
 #   sigma_a,
@@ -613,6 +631,9 @@ power_p_z(p_a = c(0.35, 0.24), p0 = 0.05, n = c(100, 100))
 #############################################################
 
 power_var_chisq(sigma_a = 70, sigma0 = 60, n = 25)
+
+# One-sided variance power
+power_var_chisq(sigma_a = 70, sigma0 = 60, n = 25, alternative = "greater")
 
 
 #############################################################
@@ -629,6 +650,10 @@ power_var_chisq(sigma_a = 70, sigma0 = 60, n = 25)
 
 power_var_ratio_F(sigma_a = c(10, 15), ratio0 = 1, n = c(25, 25),
                   alternative = "two.sided")
+
+# One-sided F-ratio power
+power_var_ratio_F(sigma_a = c(10, 15), ratio0 = 1, n = c(25, 25),
+                  alternative = "less")
 
 #############################################################
 # 5) REQUIRED SAMPLE SIZE FOR TARGET POWER
@@ -789,6 +814,11 @@ n_required_var_chisq(sigma_a = 70, sigma0 = 60,
                      alpha = 0.05, beta_target = 0.10,
                      alternative = "greater")
 
+# Required n for one-sided lower-variance alternative
+n_required_var_chisq(sigma_a = 50, sigma0 = 60,
+                     alpha = 0.05, beta_target = 0.10,
+                     alternative = "less")
+
 
 #############################################################
 # n_required_var_ratio_F(
@@ -808,6 +838,11 @@ n_required_var_chisq(sigma_a = 70, sigma0 = 60,
 n_required_var_ratio_F(sigma_a = c(23, 50), ratio0 = 1,
                        alpha = 0.05, beta_target = 0.10,
                        alternative = "two.sided", n_ratio = 1)
+
+# Required n for one-sided lower-ratio alternative with unbalanced design
+n_required_var_ratio_F(sigma_a = c(20, 40), ratio0 = 1,
+                       alpha = 0.05, beta_target = 0.10,
+                       alternative = "less", n_ratio = 1.5)
 
 
 #############################################################
