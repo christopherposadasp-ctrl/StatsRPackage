@@ -70,3 +70,17 @@ Before a tagged release:
 4. defaults and documentation are aligned
 5. version and release notes are updated
 
+## 6) GitHub Actions Automation
+
+Two workflows enforce this process in CI/CD:
+
+- `.github/workflows/ci.yml`
+  - runs on pushes and pull requests to `main`
+  - runs tests, package check, and cheat-sheet audit
+  - uploads audit artifacts
+
+- `.github/workflows/release.yml`
+  - runs on pushed tags matching `*.*.*` (for example `0.1.0`)
+  - reruns tests, check, and audit
+  - builds release artifacts in `dist/`
+  - publishes a GitHub Release with built assets and audit outputs

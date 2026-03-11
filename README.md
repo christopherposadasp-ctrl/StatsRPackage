@@ -2,6 +2,9 @@
 
 StatsRPackage is the repository for `StatsPackage`, an R package focused on introductory statistical inference and design.
 
+[![CI](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/ci.yml/badge.svg)](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/ci.yml)
+[![Release](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/release.yml/badge.svg)](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/release.yml)
+
 The project priorities are:
 - mathematical correctness
 - consistent APIs across function families
@@ -78,4 +81,3 @@ The package design assumes:
 - API index: [docs/API_INDEX.md](docs/API_INDEX.md)
 - Default policies: [docs/DEFAULT_POLICIES.md](docs/DEFAULT_POLICIES.md)
 - QA and release workflow: [docs/QA_WORKFLOW.md](docs/QA_WORKFLOW.md)
-
