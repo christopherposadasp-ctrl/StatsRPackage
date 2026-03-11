@@ -20,21 +20,28 @@ jobs:
       - name: Setup R
         uses: r-lib/actions/setup-r@v2
         with:
+          r-version: release
           use-public-rspm: true
 
-      - name: Install dependencies
-        shell: Rscript {0}
-        run: |
-          install.packages(
-            c("devtools", "remotes", "testthat"),
-            repos = "https://cloud.r-project.org"
-          )
+      - name: Install R dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          working-directory: StatsPackage -1.0
+          extra-packages: |
+            any::devtools
+            any::remotes
+            any::testthat
+            any::knitr
+            any::rmarkdown
+          needs: check
 
       - name: Run tests
-        run: Rscript -e "devtools::test('StatsPackage -1.0')"
+        working-directory: StatsPackage -1.0
+        run: Rscript -e "devtools::test('.')"
 
       - name: Run check
-        run: Rscript -e "devtools::check('StatsPackage -1.0', error_on = 'error', args = c('--no-manual'))"
+        working-directory: StatsPackage -1.0
+        run: Rscript -e "devtools::check('.', error_on = 'error', args = c('--no-manual'))"
 
       - name: Run cheat-sheet audit
         run: Rscript scripts/qa_cheatsheet_audit.R
@@ -70,4 +77,3 @@ jobs:
             dist/*
             qa/cheatsheet_audit_output.txt
             qa/cheatsheet_audit_issues.csv
-

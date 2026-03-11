@@ -1,0 +1,61 @@
+url: https://christopherposadasp-ctrl.github.io/StatsRPackage/
+template:
+  bootstrap: 5
+
+home:
+  title: StatsPackage
+  description: Statistical functions for introductory inference and design.
+
+navbar:
+  structure:
+    left: [home, reference, articles, news]
+    right: [github]
+  components:
+    github:
+      icon: fab fa-github
+      href: https://github.com/christopherposadasp-ctrl/StatsRPackage
+
+reference:
+  - title: Confidence Intervals
+    contents:
+      - ci_mu
+      - ci_p
+      - ci_var
+      - ci_lambda_exp
+  - title: Hypothesis Tests
+    contents:
+      - z_test_mu
+      - t_test_mu
+      - p_test
+      - var_test_chisq
+  - title: Power
+    contents:
+      - power_z_mu
+      - power_t_mu
+      - power_p_z
+      - power_var_chisq
+      - power_var_ratio_F
+  - title: Required Sample Size
+    contents:
+      - n_required_from_power
+      - n_required_z_mu
+      - n_required_t_mu
+      - n_required_p_z
+      - n_required_var_chisq
+      - n_required_var_ratio_F
+  - title: Width Planning
+    contents:
+      - n_width_mu_z
+      - n_width_mu_t
+      - n_width_p_wald
+  - title: Categorical Data
+    contents:
+      - chisq_gof_probs
+      - chisq_gof_dist
+      - chisq_table
+      - table_props
+  - title: Shape
+    contents:
+      - skew
+      - kurt
+

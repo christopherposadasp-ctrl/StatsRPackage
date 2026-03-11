@@ -76,6 +76,11 @@ Two workflows enforce this process in CI/CD:
 
 - `.github/workflows/ci.yml`
   - runs on pushes and pull requests to `main`
+  - matrix coverage:
+    - `ubuntu-latest` with `R-release`
+    - `ubuntu-latest` with `R-devel`
+    - `windows-latest` with `R-release`
+    - `macos-latest` with `R-release`
   - runs tests, package check, and cheat-sheet audit
   - uploads audit artifacts
 
@@ -84,3 +89,19 @@ Two workflows enforce this process in CI/CD:
   - reruns tests, check, and audit
   - builds release artifacts in `dist/`
   - publishes a GitHub Release with built assets and audit outputs
+
+- `.github/workflows/pkgdown.yml`
+  - runs on pushes to `main` and manual dispatch
+  - builds and deploys pkgdown site from `StatsPackage -1.0/`
+
+## 7) Branch Protection
+
+Protect `main` so merges require passing checks from the CI matrix.
+
+- setup guide: `docs/BRANCH_PROTECTION.md`
+- recommended enforcement:
+  - require pull requests
+  - require at least one approval
+  - require conversation resolution
+  - require linear history
+  - disallow force pushes and deletions

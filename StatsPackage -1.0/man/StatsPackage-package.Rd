@@ -8,6 +8,14 @@
 \description{
 Statistical functions for introductory inference and design.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/christopherposadasp-ctrl/StatsRPackage}
+  \item Report bugs at \url{https://github.com/christopherposadasp-ctrl/StatsRPackage/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Chris Posadas \email{christopher.v.posadas@nps.edu}
 

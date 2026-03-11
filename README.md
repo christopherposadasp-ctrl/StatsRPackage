@@ -4,6 +4,7 @@ StatsRPackage is the repository for `StatsPackage`, an R package focused on intr
 
 [![CI](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/ci.yml/badge.svg)](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/ci.yml)
 [![Release](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/release.yml/badge.svg)](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/release.yml)
+[![Pkgdown](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/pkgdown.yml/badge.svg)](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/pkgdown.yml)
 
 The project priorities are:
 - mathematical correctness
@@ -11,7 +12,7 @@ The project priorities are:
 - reusable workflows beyond a single assignment
 - regression-tested behavior
 
-Current package version: `0.0.1.0000` (development)
+Current package version: `0.1.1` (post-`0.1.0` stabilization)
 
 ## Repository Layout
 
@@ -54,6 +55,12 @@ source("2.CheatsheetV4.r")
 - API index by function family: [docs/API_INDEX.md](docs/API_INDEX.md)
 - Default behavior policies: [docs/DEFAULT_POLICIES.md](docs/DEFAULT_POLICIES.md)
 - QA and release workflow: [docs/QA_WORKFLOW.md](docs/QA_WORKFLOW.md)
+- Changelog: [StatsPackage -1.0/NEWS.md](StatsPackage%20-1.0/NEWS.md)
+
+## Site and Vignettes
+
+- Pkgdown site: [christopherposadasp-ctrl.github.io/StatsRPackage](https://christopherposadasp-ctrl.github.io/StatsRPackage/)
+- Getting started vignette source: [getting-started.Rmd](StatsPackage%20-1.0/vignettes/getting-started.Rmd)
 
 ## Quality Gates
 
@@ -81,3 +88,4 @@ The package design assumes:
 - API index: [docs/API_INDEX.md](docs/API_INDEX.md)
 - Default policies: [docs/DEFAULT_POLICIES.md](docs/DEFAULT_POLICIES.md)
 - QA and release workflow: [docs/QA_WORKFLOW.md](docs/QA_WORKFLOW.md)
+- Branch protection setup: [docs/BRANCH_PROTECTION.md](docs/BRANCH_PROTECTION.md)
