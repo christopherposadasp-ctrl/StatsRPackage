@@ -1,0 +1,256 @@
+StatsPackage Project Brief
+==========================
+
+Overview
+--------
+StatsPackage is a personal R package being built as a package-quality toolkit for a statistics course.
+The main goals are:
+- mathematical correctness first
+- reusable functions for homework, exams, and study
+- consistent output and argument style across function families
+- small public API with internal helper functions for repeated logic
+- passing devtools::test() and devtools::check()
+
+Current Development Philosophy
+-----------------------------
+1. Prefer general statistical functions over assignment-specific wrappers.
+2. Keep the public API small and useful beyond one homework set.
+3. Use internal, unexported helper functions for validation, formatting, and repeated calculations.
+4. Printed output should be readable for classmates, but returned objects should contain full computational details.
+5. Maintain consistency across function families:
+   - alpha/conf.level/digits/quiet arguments where appropriate
+   - invisible structured return objects
+   - meaningful printed summaries when quiet = FALSE
+   - regression-tested mathematical behavior
+
+Current Package Status
+----------------------
+- The package loads correctly.
+- The test suite is passing.
+- devtools::check() is passing cleanly.
+- The package has recently been extended with Chapter 14 chi-square / categorical-data functions.
+- The package is in a stable, release-quality state, but the API may still evolve before a final 1.0 release.
+
+Core Public Functions
+---------------------
+A. Confidence Interval Functions
+1. ci_mu()
+   - One-sample z CI for mean with known sigma
+   - One-sample t CI for mean with unknown sigma
+   - Two-sample Welch CI
+   - Two-sample pooled CI
+   - Two-sample z CI with known sigmas
+   - Paired-difference CI
+   - One-sided lower/upper CI support
+
+2. ci_p()
+   - One-sample exact Clopper-Pearson CI for a proportion
+   - Two-sample Wald CI for difference in proportions
+
+3. ci_var()
+   - One-sample chi-square CI for variance and standard deviation
+   - Two-sample F CI for ratio of variances
+
+4. ci_lambda_exp()
+   - Confidence interval for exponential rate parameter lambda using chi-square methods
+
+B. Width / Precision Planning Functions
+5. n_width_mu_z()
+   - Required sample size for a target CI width for a mean when sigma is known
+
+6. n_width_mu_t()
+   - Required sample size for a target CI width for a mean when sigma is unknown, using a planning SD
+
+7. n_width_p_wald()
+   - Required sample size for a target CI width for a proportion using Wald approximation
+
+C. Hypothesis Test Functions
+8. z_test_mu()
+   - One-sample and two-sample z tests for means when sigma is known
+
+9. t_test_mu()
+   - One-sample t test
+   - Two-sample Welch t test
+   - Two-sample pooled t test
+   - Paired t test
+
+10. p_test()
+   - One-sample exact binomial test for a proportion
+   - Two-sample z test for difference in proportions
+   - Current default policy:
+     * if p0 = 0, default pooled test of equality with no continuity correction
+     * if p0 != 0, default unpooled large-sample approximation with no continuity correction
+     * continuity correction is optional
+
+11. var_test_chisq()
+   - One-sample chi-square test for variance
+   - Two-sample F test for ratio of variances
+   - Important repaired behavior: two-sided chi-square/F rejection regions are printed correctly as lower-or-upper tail regions, not absolute-value regions
+
+D. Power Functions
+12. power_z_mu()
+13. power_t_mu()
+14. power_p_z()
+15. power_var_chisq()
+16. power_var_ratio_F()
+
+Notes for the proportion power family:
+- Current default policy mirrors p_test():
+  * p0 = 0 -> pooled default, no continuity correction
+  * p0 != 0 -> unpooled default, no continuity correction
+  * continuity correction remains available explicitly
+
+E. Required Sample Size for Target Power
+17. n_required_from_power()
+   - Generic helper for solving required integer n from a user-supplied power function
+
+18. n_required_z_mu()
+19. n_required_t_mu()
+20. n_required_p_z()
+21. n_required_var_chisq()
+22. n_required_var_ratio_F()
+
+F. Descriptive Shape Functions
+23. skew()
+24. kurt()
+
+Chapter 14 / Categorical Data Functions
+---------------------------------------
+These were added to support chi-square categorical-data topics while still being general enough to be useful beyond a single assignment.
+
+25. chisq_gof_probs()
+   - One-way chi-square goodness-of-fit test to specified category probabilities
+   - Supports p = NULL for equal probabilities
+   - Intended use cases:
+     * Mendel-type 9:3:3:1 ratio problems
+     * equal-probability category tests
+     * specified multinomial GOF problems
+   - Returns observed, expected, contributions, residuals, statistic, df, p-value, rejection region, and decision
+
+26. chisq_gof_dist()
+   - Chi-square GOF test to a distribution
+   - Supports at least:
+     * "pois"
+     * "norm"
+     * "exp"
+   - Handles grouped counts and, where appropriate, raw data
+   - Estimates parameters when needed and adjusts df correctly
+   - Can combine sparse classes when necessary
+
+27. chisq_table()
+   - Chi-square test for an r x c contingency table
+   - Supports:
+     * independence
+     * homogeneity
+   - Returns expected table, contributions, Pearson residuals, standardized residuals, df, p-value, and decision
+   - Optional Yates correction only in 2 x 2 tables
+
+28. table_props()
+   - Descriptive row, column, or overall proportions for contingency tables
+   - Useful as a descriptive companion to chisq_table()
+
+Architecture / Object Style
+---------------------------
+The package uses family-consistent return objects and helpers.
+
+Design conventions:
+- quiet = FALSE prints a readable summary
+- quiet = TRUE suppresses printed output
+- functions return invisible classed objects
+- test and power functions generally return structured results including:
+  * statistic
+  * df when applicable
+  * p_value or power/beta
+  * rejection region / critical values where appropriate
+  * inputs and assumptions
+  * additional diagnostics (e.g., expected counts, contributions, residuals)
+
+Internal Helper Philosophy
+--------------------------
+Internal helpers are used for:
+- input validation
+- formatting
+- repeated calculations
+- probability/default policy routing
+- chi-square expected count calculations
+- chi-square contributions and residuals
+- sparse-cell / sparse-class handling when needed
+
+The public API should remain small, while repeated mechanics stay internal.
+
+Important Correctness Fixes Already Made
+----------------------------------------
+1. Variance-family two-sided rejection regions
+   - Fixed previously incorrect absolute-value output for chi-square and F procedures.
+   - Two-sided variance-family outputs now use the correct lower-tail OR upper-tail region.
+
+2. Proportion-family defaults
+   - Updated p_test(), power_p_z(), and n_required_p_z() to use cleaner course-aligned defaults:
+     * equality tests (p0 = 0): pooled by default, no continuity correction
+     * nonzero null difference: unpooled by default, no continuity correction
+     * continuity correction available explicitly
+
+3. Result-object consistency
+   - Several functions were updated to return classed objects instead of plain lists, restoring compatibility with the package's testing and architecture conventions.
+
+Typical Workflow
+----------------
+During development:
+1. devtools::load_all("StatsPackage")
+2. run targeted examples / cheat sheet
+3. devtools::test("StatsPackage")
+4. devtools::check("StatsPackage")
+
+For release-style validation:
+1. devtools::document("StatsPackage")
+2. devtools::check("StatsPackage")
+3. devtools::install("StatsPackage")
+4. rerun the cheat sheet from the installed package
+
+Cheat Sheet / QA Process
+------------------------
+A major quality-control tool for the package is the cheat sheet script.
+It serves three purposes:
+- demonstration of intended use
+- regression check on printed output
+- mathematical audit target
+
+When evaluating cheat-sheet output, priority order is:
+1. mathematical correctness
+2. correct null/alternative interpretation and rejection regions
+3. pedagogical usefulness for classmates
+4. code/print cleanup only after the math is solid
+
+Current Versioning Guidance
+---------------------------
+The package has been passing tests and checks in a development version around 0.0.1.0000.
+Recommended stable release progression:
+- first stable release: 0.1.0
+- move to 1.0.0 only after the public API feels frozen through additional real use
+
+Good Candidate Next Tasks for Codex
+-----------------------------------
+1. Audit the latest full cheat-sheet output for mathematical correctness.
+2. Clean stale cheat-sheet comments so defaults match current function behavior.
+3. Reduce redundant examples in the proportion power / required-n sections.
+4. Consider adding additional chapter-specific but reusable chi-square utilities only if they are broadly useful.
+5. Improve documentation or README-style indexing of function families.
+
+What Not To Do
+--------------
+- Do not replace stable functions wholesale when a small patch is enough.
+- Do not introduce assignment-specific wrappers unless they are clearly reusable.
+- Do not change mathematically important defaults casually; if changed, tests and documentation must be updated together.
+- Do not prioritize pretty output over mathematical correctness.
+
+Summary
+-------
+StatsPackage is a package-quality personal statistics toolkit centered on:
+- confidence intervals
+- hypothesis tests
+- power
+- sample size planning
+- descriptive shape
+- chi-square / categorical-data methods
+
+Its defining priorities are mathematical correctness, consistency of interface, reusable function design, and regression-tested behavior.
