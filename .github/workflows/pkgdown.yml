@@ -41,8 +41,9 @@ jobs:
         run: Rscript -e "pkgdown::build_site('StatsPackage -1.0', install = FALSE, new_process = FALSE)"
 
       - name: Deploy to gh-pages
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          branch: gh-pages
-          folder: StatsPackage -1.0/docs
-          clean: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: StatsPackage -1.0/docs
+          publish_branch: gh-pages
+          force_orphan: true
