@@ -34,12 +34,13 @@ devtools::install("StatsPackage -1.0")
 library(StatsPackage)
 ```
 
-Install from GitHub:
+Install from GitHub (canonical classroom deployment command, pinned to `0.1.2`):
 
 ```r
 remotes::install_github(
   "christopherposadasp-ctrl/StatsRPackage",
-  subdir = "StatsPackage -1.0"
+  subdir = "StatsPackage -1.0",
+  ref = "0.1.2"
 )
 library(StatsPackage)
 ```
@@ -88,6 +89,7 @@ The package design assumes:
 ## Documentation Map
 
 - Project brief: [docs/StatsPackage_Project_Brief.txt](docs/StatsPackage_Project_Brief.txt)
+- Deployment checklist: [docs/DEPLOYMENT_CHECKLIST.md](docs/DEPLOYMENT_CHECKLIST.md)
 - API index: [docs/API_INDEX.md](docs/API_INDEX.md)
 - Default policies: [docs/DEFAULT_POLICIES.md](docs/DEFAULT_POLICIES.md)
 - QA and release workflow: [docs/QA_WORKFLOW.md](docs/QA_WORKFLOW.md)
