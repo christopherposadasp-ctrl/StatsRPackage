@@ -32,7 +32,7 @@ Expectation:
 ### Direct run
 
 ```bash
-Rscript 2.CheatsheetV4.r
+Rscript 2.CheatsheetV5.r
 ```
 
 This is the fastest way to validate current example behavior and printed summaries.

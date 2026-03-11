@@ -80,6 +80,5 @@ For local validation before publishing:
 ```r
 devtools::test("StatsPackage -1.0")
 devtools::check("StatsPackage -1.0")
-source("2.CheatsheetV4.r")
+source("2.CheatsheetV5.r")
 ```
-

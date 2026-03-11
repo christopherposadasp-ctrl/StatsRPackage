@@ -143,19 +143,21 @@ ci_p(x = c(42, 30), n = c(100, 100))
 #############################################################
 ##CI for Variance----
 # ci_var(
-#   s,
-#   n,
-#   conf.level = 0.95,
-#   digits = 4,
-#   quiet = FALSE
+#   s,                 # sample SD(s): scalar (one-sample) or length-2 (two-sample)
+#   n,                 # sample size(s) matching s
+#   conf.level = 0.95, # confidence level
+#   digits = 4,        # printed decimal places
+#   quiet = FALSE      # FALSE prints interpretation, TRUE returns silently
 # )
 #
-# One-sample CI for variance / standard deviation
+# Structure:
+#   one-sample : scalar s and n -> CI for sigma^2 and sigma
+#   two-sample : length-2 s and n -> CI for sigma1^2 / sigma2^2
 #############################################################
-ci_var(s = 4.2, n = 12)
+ci_var(s = 4.2, n = 12)  # one-sample CI for variance and SD
 
-# Two-sample (ratio σ1^2/σ2^2)
-ci_var(s = c(4.2, 3.1), n = c(12, 10), conf.level = 0.95)
+# Two-sample (ratio sigma1^2 / sigma2^2)
+ci_var(s = c(4.2, 3.1), n = c(12, 10), conf.level = 0.95)  # CI for sigma1^2 / sigma2^2
 #############################################################
 ##CI for lambda (Exponential)----
 # ci_lambda_exp(
@@ -192,20 +194,23 @@ n_width_mu_z(w = 2, sigma = 10)
 
 #############################################################
 ## Mu target width T----
-#   w,
-#   s,
-#   conf.level = 0.95,
-#   n_start = NULL,
-#   max_iter = 100,
-#   digits = 4,
-#   quiet = FALSE
+# n_width_mu_t(
+#   w,                 # target TOTAL CI width
+#   s,                 # planning SD (pilot or prior estimate)
+#   conf.level = 0.95, # confidence level for the future CI
+#   n_start = NULL,    # optional starting n for the t-critical iteration
+#   max_iter = 100,    # iteration cap for convergence
+#   digits = 4,        # printed decimal places
+#   quiet = FALSE      # FALSE prints interpretation, TRUE returns silently
 # )
 #
 # Use when sigma is unknown and s is your planning SD.
 # w = TOTAL CI width.
+# n_start can be used to seed the iteration.
+# max_iter controls how long the t-critical iteration is allowed to run.
 #############################################################
 
-n_width_mu_t(w = 4, s = 15)
+n_width_mu_t(w = 4, s = 15)  # t-based width planning when sigma is unknown
 
 
 #############################################################
@@ -620,40 +625,48 @@ power_p_z(p_a = c(0.35, 0.24), p0 = 0.05, n = c(100, 100))
 power_p_z(p_a = c(0.35, 0.24), p0 = 0, n = c(100, 100), alternative = "greater")
 #############################################################
 # power_var_chisq(
-#   sigma_a,
-#   sigma0,
-#   n,
-#   alpha = 0.05,
-#   alternative = c("two.sided", "less", "greater"),
-#   digits = 4,
-#   quiet = FALSE
+#   sigma_a,                                 # true SD under Ha
+#   sigma0,                                  # SD under H0
+#   n,                                       # one-sample n
+#   alpha = 0.05,                            # Type I error rate
+#   alternative = c("two.sided", "less", "greater"), # test direction
+#   digits = 4,                              # printed decimal places
+#   quiet = FALSE                            # FALSE prints interpretation
 # )
+# Use guide:
+#   one-sample variance power under normality.
+#   sigma_a = true SD under Ha; sigma0 = null SD in H0.
+#   use "greater" when sigma_a > sigma0, "less" when sigma_a < sigma0.
 #############################################################
 
-power_var_chisq(sigma_a = 70, sigma0 = 60, n = 25)
+power_var_chisq(sigma_a = 70, sigma0 = 60, n = 25)  # two-sided one-sample variance power
 
 # One-sided variance power
-power_var_chisq(sigma_a = 70, sigma0 = 60, n = 25, alternative = "greater")
+power_var_chisq(sigma_a = 70, sigma0 = 60, n = 25, alternative = "greater")  # right-tail alternative
 
 
 #############################################################
 # power_var_ratio_F(
-#   sigma_a,
-#   ratio0 = 1,
-#   n,
-#   alpha = 0.05,
-#   alternative = c("two.sided", "less", "greater"),
-#   digits = 4,
-#   quiet = FALSE
+#   sigma_a,                                 # c(sigma1_a, sigma2_a) under Ha
+#   ratio0 = 1,                              # null ratio sigma1^2 / sigma2^2
+#   n,                                       # c(n1, n2)
+#   alpha = 0.05,                            # Type I error rate
+#   alternative = c("two.sided", "less", "greater"), # test direction
+#   digits = 4,                              # printed decimal places
+#   quiet = FALSE                            # FALSE prints interpretation
 # )
+# Use guide:
+#   two-sample variance-ratio power under normality.
+#   sigma_a = c(sigma1_a, sigma2_a); ratio0 is the null sigma1^2 / sigma2^2.
+#   n = c(n1, n2); unbalanced n changes df and power.
 #############################################################
 
 power_var_ratio_F(sigma_a = c(10, 15), ratio0 = 1, n = c(25, 25),
-                  alternative = "two.sided")
+                  alternative = "two.sided")  # two-sided F-ratio power
 
 # One-sided F-ratio power
 power_var_ratio_F(sigma_a = c(10, 15), ratio0 = 1, n = c(25, 25),
-                  alternative = "less")
+                  alternative = "less")  # left-tail alternative
 
 #############################################################
 # 5) REQUIRED SAMPLE SIZE FOR TARGET POWER
@@ -661,17 +674,21 @@ power_var_ratio_F(sigma_a = c(10, 15), ratio0 = 1, n = c(25, 25),
 
 #############################################################
 # n_required_from_power(
-#   power_at_n,
-#   target_power,
-#   n_min = 1L,
-#   n_max = 1e6L,
-#   digits = 4,
-#   quiet = FALSE
+#   power_at_n,       # function: integer n -> scalar power in [0, 1]
+#   target_power,     # desired minimum power
+#   n_min = 1L,       # lower bound of integer search
+#   n_max = 1e6L,     # upper bound of integer search
+#   digits = 4,       # printed decimal places
+#   quiet = FALSE     # FALSE prints interpretation
 # )
+# Use guide:
+#   power_at_n must accept integer n and return one power value in [0, 1].
+#   target_power is the desired minimum power.
+#   returns the smallest n in [n_min, n_max] that meets target_power.
 #############################################################
 
-toy_power <- function(nn) 1 - exp(-nn / 50)
-n_required_from_power(power_at_n = toy_power, target_power = 0.80, n_min = 1, n_max = 10000)
+toy_power <- function(nn) 1 - exp(-nn / 50)  # monotone toy power curve for demonstration
+n_required_from_power(power_at_n = toy_power, target_power = 0.80, n_min = 1, n_max = 10000)  # generic integer solver
 
 
 #############################################################
@@ -798,51 +815,60 @@ n_required_p_z(p_a = c(0.35, 0.24), p0 = 0.05,
                alternative = "two.sided")
 #############################################################
 # n_required_var_chisq(
-#   sigma_a,
-#   sigma0,
-#   alpha = 0.05,
-#   beta_target = 0.10,
-#   alternative = c("two.sided", "less", "greater"),
-#   n_min = 2L,
-#   n_max = 1e6L,
-#   digits = 4,
-#   quiet = FALSE
+#   sigma_a,                                 # true SD under Ha
+#   sigma0,                                  # SD under H0
+#   alpha = 0.05,                            # Type I error rate
+#   beta_target = 0.10,                      # target Type II error (1 - power)
+#   alternative = c("two.sided", "less", "greater"), # test direction
+#   n_min = 2L,                              # lower bound for feasible n
+#   n_max = 1e6L,                            # upper search bound
+#   digits = 4,                              # printed decimal places
+#   quiet = FALSE                            # FALSE prints interpretation
 # )
+# Use guide:
+#   one-sample required n for chi-square variance tests.
+#   alternative = "greater" requires sigma_a > sigma0.
+#   alternative = "less" requires sigma_a < sigma0.
 #############################################################
 
 n_required_var_chisq(sigma_a = 70, sigma0 = 60,
                      alpha = 0.05, beta_target = 0.10,
-                     alternative = "greater")
+                     alternative = "greater")  # right-tail design target
 
 # Required n for one-sided lower-variance alternative
 n_required_var_chisq(sigma_a = 50, sigma0 = 60,
                      alpha = 0.05, beta_target = 0.10,
-                     alternative = "less")
+                     alternative = "less")  # left-tail design target
 
 
 #############################################################
 # n_required_var_ratio_F(
-#   sigma_a,
-#   ratio0 = 1,
-#   alpha = 0.05,
-#   beta_target = 0.10,
-#   alternative = c("two.sided", "less", "greater"),
-#   n_min = 2L,
-#   n_max = 1e6L,
-#   n_ratio = 1,
-#   digits = 4,
-#   quiet = FALSE
+#   sigma_a,                                 # c(sigma1_a, sigma2_a) under Ha
+#   ratio0 = 1,                              # null ratio sigma1^2 / sigma2^2
+#   alpha = 0.05,                            # Type I error rate
+#   beta_target = 0.10,                      # target Type II error (1 - power)
+#   alternative = c("two.sided", "less", "greater"), # test direction
+#   n_min = 2L,                              # lower bound for feasible n
+#   n_max = 1e6L,                            # upper search bound
+#   n_ratio = 1,                             # n2 / n1 planning ratio
+#   digits = 4,                              # printed decimal places
+#   quiet = FALSE                            # FALSE prints interpretation
 # )
+# Use guide:
+#   two-sample required n for F-ratio tests.
+#   sigma_a = c(sigma1_a, sigma2_a), ratio0 is the null sigma1^2 / sigma2^2.
+#   n_ratio = n2 / n1 lets you plan unbalanced samples.
+#   alternative = "less" requires true ratio < ratio0; "greater" requires > ratio0.
 #############################################################
 
 n_required_var_ratio_F(sigma_a = c(23, 50), ratio0 = 1,
                        alpha = 0.05, beta_target = 0.10,
-                       alternative = "two.sided", n_ratio = 1)
+                       alternative = "two.sided", n_ratio = 1)  # balanced two-sided design
 
 # Required n for one-sided lower-ratio alternative with unbalanced design
 n_required_var_ratio_F(sigma_a = c(20, 40), ratio0 = 1,
                        alpha = 0.05, beta_target = 0.10,
-                       alternative = "less", n_ratio = 1.5)
+                       alternative = "less", n_ratio = 1.5)  # n2 = 1.5 * n1 planning
 
 
 #############################################################
