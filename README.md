@@ -12,7 +12,7 @@ The project priorities are:
 - reusable workflows beyond a single assignment
 - regression-tested behavior
 
-Current package version: `0.1.1` (post-`0.1.0` stabilization)
+Current package version: `0.1.2` (post-`0.1.0` stabilization)
 
 ## Repository Layout
 

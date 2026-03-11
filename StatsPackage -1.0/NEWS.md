@@ -1,3 +1,9 @@
+# StatsPackage 0.1.2
+
+- Fix pkgdown metadata to include the deployed site URL in `DESCRIPTION`.
+- Add ignore rules for generated pkgdown site artifacts.
+- Keep release automation and package metadata aligned for the next tag.
+
 # StatsPackage 0.1.1
 
 - Align package version with post-`0.1.0` release maintenance.

@@ -1,6 +1,6 @@
 Package: StatsPackage
 Title: Statistical Functions for Introductory Inference and Design
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: 
     person("Chris", "Posadas", email = "christopher.v.posadas@nps.edu", role = c("aut", "cre"))
 Description: A personal package of reusable statistical functions for confidence intervals,
