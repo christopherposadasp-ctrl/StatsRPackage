@@ -53,6 +53,21 @@ Expected outputs:
 - `qa/cheatsheet_audit_output.txt`
 - `qa/cheatsheet_audit_issues.csv`
 
+### Release smoke test
+
+```bash
+Rscript scripts/qa_smoke_release.R
+```
+
+The smoke runner:
+- validates high-risk function families with fast structural checks
+- confirms default-policy-sensitive behavior (for example nonzero-null proportion defaults)
+- writes pass/fail artifacts for quick deployment triage
+
+Expected outputs:
+- `qa/smoke_test_output.txt`
+- `qa/smoke_test_results.csv`
+
 ## 4) Triage Priorities
 
 When issues occur, prioritize fixes in this order:

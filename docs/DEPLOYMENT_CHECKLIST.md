@@ -52,7 +52,16 @@ library(StatsPackage)
 ci_mu(xbar = 12.4, n = 15, s = 3.2, quiet = TRUE)
 ```
 
-Expected: package installs, loads, and returns a structured result object without error.
+Then run the lightweight smoke suite from repository root:
+
+```bash
+Rscript scripts/qa_smoke_release.R
+```
+
+Expected:
+- package installs and loads without error
+- smoke checks pass across CI/test/default-policy-sensitive functions
+- `qa/smoke_test_results.csv` is written with `PASS` statuses
 
 ## 4) Rollback / Hotfix Plan
 
@@ -70,4 +79,3 @@ If a deployment issue is found:
 
 1. Watch GitHub Issues for install/runtime reports.
 2. If multiple students report the same failure, cut a patch release rather than giving one-off workaround steps.
-

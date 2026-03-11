@@ -81,6 +81,12 @@ Cheat-sheet regression audit:
 Rscript scripts/qa_cheatsheet_audit.R
 ```
 
+Release smoke test:
+
+```bash
+Rscript scripts/qa_smoke_release.R
+```
+
 The package design assumes:
 - `quiet = FALSE` prints a readable summary
 - `quiet = TRUE` suppresses print output
