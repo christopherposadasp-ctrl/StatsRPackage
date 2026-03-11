@@ -1,0 +1,99 @@
+name: Coverage
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      COVERAGE_THRESHOLD: "65"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - name: Install dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          working-directory: StatsPackage -1.0
+          extra-packages: |
+            any::covr
+            any::testthat
+          needs: coverage
+
+      - name: Compute coverage and enforce threshold
+        shell: Rscript {0}
+        run: |
+          dir.create("qa", showWarnings = FALSE, recursive = TRUE)
+          library(testthat)
+          source_files <- list.files(
+            "StatsPackage -1.0/R",
+            pattern = "\\.[Rr]$",
+            full.names = TRUE
+          )
+          test_files <- list.files(
+            "StatsPackage -1.0/tests/testthat",
+            pattern = "\\.[Rr]$",
+            full.names = TRUE
+          )
+          cov <- covr::file_coverage(
+            source_files = source_files,
+            test_files = test_files
+          )
+          vals <- vapply(
+            cov,
+            function(x) {
+              if (is.list(x) && !is.null(x$value)) {
+                as.numeric(x$value)
+              } else {
+                as.numeric(x)
+              }
+            },
+            numeric(1)
+          )
+          coverage_pct <- 100 * mean(vals > 0)
+          threshold <- as.numeric(Sys.getenv("COVERAGE_THRESHOLD", "65"))
+          summary_text <- sprintf(
+            "Coverage: %.2f%%\nThreshold: %.2f%%\nTotal lines: %d\nCovered lines: %d\n",
+            coverage_pct,
+            threshold,
+            length(vals),
+            sum(vals > 0)
+          )
+          cat(summary_text)
+          writeLines(summary_text, "qa/coverage-summary.txt")
+          covr::to_cobertura(cov, filename = "qa/coverage.xml")
+          if (is.na(coverage_pct) || coverage_pct < threshold) {
+            stop(
+              sprintf(
+                "Coverage gate failed: %.2f%% < %.2f%%",
+                coverage_pct,
+                threshold
+              )
+            )
+          }
+
+      - name: Upload coverage artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          if-no-files-found: warn
+          path: |
+            qa/coverage-summary.txt
+            qa/coverage.xml

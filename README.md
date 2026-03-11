@@ -5,6 +5,8 @@ StatsRPackage is the repository for `StatsPackage`, an R package focused on intr
 [![CI](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/ci.yml/badge.svg)](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/ci.yml)
 [![Release](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/release.yml/badge.svg)](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/release.yml)
 [![Pkgdown](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/pkgdown.yml/badge.svg)](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/pkgdown.yml)
+[![Lint](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/lint.yml/badge.svg)](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/lint.yml)
+[![Coverage](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/coverage.yml/badge.svg)](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/coverage.yml)
 
 The project priorities are:
 - mathematical correctness
@@ -69,6 +71,7 @@ Minimum local quality checks:
 ```r
 devtools::test("StatsPackage -1.0")
 devtools::check("StatsPackage -1.0")
+lintr::lint_dir("StatsPackage -1.0/R")
 ```
 
 Cheat-sheet regression audit:
@@ -89,3 +92,4 @@ The package design assumes:
 - Default policies: [docs/DEFAULT_POLICIES.md](docs/DEFAULT_POLICIES.md)
 - QA and release workflow: [docs/QA_WORKFLOW.md](docs/QA_WORKFLOW.md)
 - Branch protection setup: [docs/BRANCH_PROTECTION.md](docs/BRANCH_PROTECTION.md)
+- Contributing guide: [CONTRIBUTING.md](CONTRIBUTING.md)

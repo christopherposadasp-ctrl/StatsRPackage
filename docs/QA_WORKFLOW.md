@@ -94,6 +94,15 @@ Two workflows enforce this process in CI/CD:
   - runs on pushes to `main` and manual dispatch
   - builds and deploys pkgdown site from `StatsPackage -1.0/`
 
+- `.github/workflows/lint.yml`
+  - runs `lintr` checks on package R source
+  - intended as style/static-analysis guard
+
+- `.github/workflows/coverage.yml`
+  - computes test coverage with `covr`
+  - enforces a minimum threshold in CI (`COVERAGE_THRESHOLD`)
+  - uploads coverage summary artifacts
+
 ## 7) Branch Protection
 
 Protect `main` so merges require passing checks from the CI matrix.

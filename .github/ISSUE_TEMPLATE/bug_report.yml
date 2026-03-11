@@ -1,0 +1,62 @@
+name: Bug report
+description: Report a defect in package behavior, tests, documentation, or workflows.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Provide a reproducible report with data, function call, expected behavior, and observed behavior.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What is broken?
+      placeholder: Briefly describe the bug.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Include exact steps and inputs.
+      placeholder: |
+        1. Run ...
+        2. Call ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      placeholder: What should happen?
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed behavior
+      placeholder: What actually happened?
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Environment and context
+      description: R version, OS, package version, and any relevant logs.
+      placeholder: |
+        R version:
+        OS:
+        StatsPackage version:
+        Additional notes:
+  - type: textarea
+    id: checks
+    attributes:
+      label: Checks run
+      description: If relevant, include outputs from test/check/audit commands.
+      placeholder: |
+        devtools::test("StatsPackage -1.0")
+        devtools::check("StatsPackage -1.0")
+        Rscript scripts/qa_cheatsheet_audit.R

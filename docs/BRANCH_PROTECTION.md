@@ -10,6 +10,8 @@ Set required status checks to:
 - `ubuntu-latest / R-devel`
 - `windows-latest / R-release`
 - `macos-latest / R-release`
+- `lintr`
+- `coverage`
 
 ## Apply via GitHub REST API
 
@@ -30,7 +32,9 @@ curl -L \
         "ubuntu-latest / R-release",
         "ubuntu-latest / R-devel",
         "windows-latest / R-release",
-        "macos-latest / R-release"
+        "macos-latest / R-release",
+        "lintr",
+        "coverage"
       ]
     },
     "enforce_admins": true,
@@ -49,4 +53,3 @@ curl -L \
     "restrictions": null
   }'
 ```
-

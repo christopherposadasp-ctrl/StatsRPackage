@@ -1,0 +1,42 @@
+name: Feature request
+description: Propose a reusable improvement to package functionality or docs/workflows.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Focus on reusable functionality and mathematically coherent design.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What limitation are you trying to solve?
+      placeholder: Describe the current gap.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the API/behavior change you want.
+      placeholder: Proposed function(s), arguments, and expected return shape.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other approaches or why existing functions are insufficient.
+  - type: textarea
+    id: math
+    attributes:
+      label: Mathematical details
+      description: Include formulas, assumptions, or references if applicable.
+  - type: textarea
+    id: tests
+    attributes:
+      label: Test plan
+      description: How should this be validated?
+      placeholder: Unit tests, cheat-sheet examples, edge cases.
