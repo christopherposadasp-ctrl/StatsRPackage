@@ -14,7 +14,7 @@ The project priorities are:
 - reusable workflows beyond a single assignment
 - regression-tested behavior
 
-Current package version: `0.1.2` (post-`0.1.0` stabilization)
+Current package version: `0.1.3` (post-`0.1.0` stabilization)
 
 ## Repository Layout
 
@@ -34,13 +34,13 @@ devtools::install("StatsPackage -1.0")
 library(StatsPackage)
 ```
 
-Install from GitHub (canonical classroom deployment command, pinned to `0.1.2`):
+Install from GitHub (canonical classroom deployment command, pinned to `0.1.3`):
 
 ```r
 remotes::install_github(
   "christopherposadasp-ctrl/StatsRPackage",
   subdir = "StatsPackage -1.0",
-  ref = "0.1.2"
+  ref = "0.1.3"
 )
 library(StatsPackage)
 ```
@@ -95,6 +95,7 @@ The package design assumes:
 ## Documentation Map
 
 - Project brief: [docs/StatsPackage_Project_Brief.txt](docs/StatsPackage_Project_Brief.txt)
+- 1.0 scope: [docs/1.0_SCOPE.md](docs/1.0_SCOPE.md)
 - Deployment checklist: [docs/DEPLOYMENT_CHECKLIST.md](docs/DEPLOYMENT_CHECKLIST.md)
 - API index: [docs/API_INDEX.md](docs/API_INDEX.md)
 - Default policies: [docs/DEFAULT_POLICIES.md](docs/DEFAULT_POLICIES.md)
