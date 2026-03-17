@@ -32,7 +32,7 @@ Expectation:
 ### Direct run
 
 ```bash
-Rscript 2.CheatsheetV5.r
+Rscript 2.CheatsheetV7.r
 ```
 
 This is the fastest way to validate current example behavior and printed summaries.
@@ -129,3 +129,4 @@ Protect `main` so merges require passing checks from the CI matrix.
   - require conversation resolution
   - require linear history
   - disallow force pushes and deletions
+
