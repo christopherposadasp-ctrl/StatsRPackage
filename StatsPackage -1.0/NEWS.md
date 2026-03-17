@@ -1,3 +1,12 @@
+# StatsPackage 0.1.3
+
+- Allow `chisq_gof_dist()` to use `k = 3` for exponential raw-data GOF when
+  the degrees of freedom remain positive.
+- Keep stricter `k` requirements for continuous GOF settings that would
+  otherwise yield invalid degrees of freedom.
+- Add regression tests covering the new exponential `k = 3` path and the
+  retained normal-model rejection at `k = 3`.
+
 # StatsPackage 0.1.2
 
 - Fix pkgdown metadata to include the deployed site URL in `DESCRIPTION`.

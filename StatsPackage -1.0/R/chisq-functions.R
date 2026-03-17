@@ -28,7 +28,8 @@
 #' @param dist Distribution for `chisq_gof_dist()`: `"pois"`, `"norm"`, or
 #'   `"exp"`.
 #' @param k Number of classes used for raw-data GOF tests when `breaks` is not
-#'   supplied.
+#'   supplied. For continuous GOF tests, `k` must be large enough to leave
+#'   positive degrees of freedom after any parameter-estimation adjustment.
 #' @param breaks Class boundaries for grouped `chisq_gof_dist()` input.
 #' @param params Named list of distribution parameters when parameters are not
 #'   estimated from raw data.
@@ -220,7 +221,7 @@ chisq_gof_dist <- function(x = NULL,
 
       if (is.null(k)) k <- 5L
       k <- as.integer(k)
-      if (!is.finite(k) || k < 4L) stop(fun, ": k must be an integer >= 4.")
+      if (!is.finite(k) || k < 2L) stop(fun, ": k must be an integer >= 2.")
     } else {
       observed <- .ht_validate_integer_vector(observed, "observed", fun, min_value = 0L)
       if (sum(observed) <= 0) stop(fun, ": the total observed count must be > 0.")
@@ -246,6 +247,17 @@ chisq_gof_dist <- function(x = NULL,
       m_est <- if (estimate || params_estimated) 1L else 0L
 
       if (raw) {
+        min_k <- m_est + 2L
+        if (k < min_k) {
+          stop(
+            fun,
+            ": k = ", k,
+            " is too small for dist = 'exp' with ",
+            if (m_est > 0L) "estimated" else "fixed",
+            " parameters; need at least ", min_k, " classes."
+          )
+        }
+
         if (any(x < 0)) {
           note <- c(note, "Exp model assumes x >= 0; negative values were retained in the raw data.")
         }
@@ -295,6 +307,17 @@ chisq_gof_dist <- function(x = NULL,
       m_est <- if (estimate || params_estimated) 2L else 0L
 
       if (raw) {
+        min_k <- m_est + 2L
+        if (k < min_k) {
+          stop(
+            fun,
+            ": k = ", k,
+            " is too small for dist = 'norm' with ",
+            if (m_est > 0L) "estimated" else "fixed",
+            " parameters; need at least ", min_k, " classes."
+          )
+        }
+
         if (is.null(breaks)) {
           probs <- (1:(k - 1L)) / k
           cuts <- stats::qnorm(probs, mean = mu, sd = sigma)

@@ -76,7 +76,8 @@ where implemented, class combining.}
 \code{"exp"}.}
 
 \item{k}{Number of classes used for raw-data GOF tests when \code{breaks} is not
-supplied.}
+supplied. For continuous GOF tests, \code{k} must be large enough to leave
+positive degrees of freedom after any parameter-estimation adjustment.}
 
 \item{breaks}{Class boundaries for grouped \code{chisq_gof_dist()} input.}
 

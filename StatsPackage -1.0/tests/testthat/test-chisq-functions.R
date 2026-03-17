@@ -57,6 +57,38 @@ test_that("chisq_gof_dist adjusts df correctly when parameters are estimated for
   expect_equal(out$chi_stat, sum(out$contrib), tolerance = 1e-12)
 })
 
+test_that("chisq_gof_dist allows k = 3 for exponential raw data when df stays positive", {
+  x <- seq(0.1, 3, length.out = 30)
+
+  out <- chisq_gof_dist(
+    x = x,
+    dist = "exp",
+    k = 3,
+    estimate = TRUE,
+    quiet = TRUE
+  )
+
+  expect_s3_class(out, "htest_result")
+  expect_equal(as.numeric(out$expected), rep(10, 3), tolerance = 1e-10)
+  expect_equal(out$df, 1)
+  expect_equal(out$chi_stat, sum(out$contrib), tolerance = 1e-12)
+})
+
+test_that("chisq_gof_dist rejects k = 3 for normal raw data with estimated parameters", {
+  x <- seq(-2.45, 2.45, length.out = 50)
+
+  expect_error(
+    chisq_gof_dist(
+      x = x,
+      dist = "norm",
+      k = 3,
+      estimate = TRUE,
+      quiet = TRUE
+    ),
+    "too small for dist = 'norm'"
+  )
+})
+
 test_that("chisq_gof_dist combines sparse right-tail classes for Poisson", {
   observed <- c(40, 30, 15, 8, 4, 2, 1)
 
