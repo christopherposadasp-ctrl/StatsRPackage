@@ -62,6 +62,140 @@ defs <- list(
   )
 )
 
+#############################################################
+## Super Summary Helper ----
+# Super_Summary(
+#   x,
+#   na_rm = TRUE,
+#   digits = 4
+# )
+#
+# Raw-data helper for descriptive summaries.
+# Prints a grouped console summary and returns an invisible
+# structured list. Uses StatsPackage::skew() and StatsPackage::kurt().
+#############################################################
+Super_Summary <- function(x, na_rm = TRUE, digits = 4) {
+  if (!is.numeric(x)) {
+    stop("Super_Summary(): x must be numeric.")
+  }
+  if (!is.logical(na_rm) || length(na_rm) != 1L || is.na(na_rm)) {
+    stop("Super_Summary(): na_rm must be TRUE or FALSE.")
+  }
+  if (!is.numeric(digits) || length(digits) != 1L || !is.finite(digits) || digits < 0) {
+    stop("Super_Summary(): digits must be a single nonnegative number.")
+  }
+
+  n_total <- length(x)
+  n_missing <- sum(is.na(x))
+
+  if (!na_rm && n_missing > 0L) {
+    stop("Super_Summary(): x contains missing values; use na_rm = TRUE to remove them.")
+  }
+
+  x_used <- if (na_rm) x[!is.na(x)] else x
+  n_used <- length(x_used)
+
+  if (n_used == 0L) {
+    stop("Super_Summary(): no non-missing observations are available.")
+  }
+
+  qu <- stats::quantile(x_used, probs = c(0.25, 0.50, 0.75), names = FALSE, type = 7)
+  sd_x <- stats::sd(x_used)
+  var_x <- stats::var(x_used)
+  se_x <- if (is.finite(sd_x)) sd_x / sqrt(n_used) else NA_real_
+
+  skew_x <- tryCatch(
+    skew(x_used, na_rm = FALSE, quiet = TRUE)$estimate,
+    error = function(e) NA_real_
+  )
+  kurt_x <- tryCatch(
+    kurt(x_used, na_rm = FALSE, quiet = TRUE)$estimate,
+    error = function(e) NA_real_
+  )
+
+  out <- list(
+    counts = list(
+      n_total = n_total,
+      n = n_used,
+      n_missing = n_missing,
+      na_rm = na_rm
+    ),
+    location = c(
+      mean = mean(x_used),
+      median = stats::median(x_used)
+    ),
+    spread = c(
+      sd = sd_x,
+      var = var_x,
+      se_mean = se_x,
+      min = min(x_used),
+      q1 = qu[1L],
+      q3 = qu[3L],
+      max = max(x_used),
+      iqr = stats::IQR(x_used),
+      range = max(x_used) - min(x_used)
+    ),
+    shape = c(
+      skewness = skew_x,
+      kurtosis = kurt_x
+    ),
+    other = c(
+      sum = sum(x_used)
+    )
+  )
+
+  fmt <- function(z) {
+    if (is.na(z)) return("NA")
+    if (is.nan(z)) return("NaN")
+    if (is.infinite(z)) return(if (z > 0) "Inf" else "-Inf")
+    formatC(z, format = "f", digits = as.integer(digits))
+  }
+
+  cat("\nSample summary statistics\n\n", sep = "")
+  cat("Total length = ", out$counts$n_total, "\n", sep = "")
+  cat("Used n = ", out$counts$n, "   Missing = ", out$counts$n_missing, "\n", sep = "")
+  cat("na_rm = ", out$counts$na_rm, "\n\n", sep = "")
+
+  cat("Location:\n", sep = "")
+  cat(
+    "mean = ", fmt(out$location["mean"]),
+    "   median = ", fmt(out$location["median"]), "\n\n",
+    sep = ""
+  )
+
+  cat("Spread:\n", sep = "")
+  cat(
+    "sd = ", fmt(out$spread["sd"]),
+    "   var = ", fmt(out$spread["var"]),
+    "   se_mean = ", fmt(out$spread["se_mean"]), "\n",
+    sep = ""
+  )
+  cat(
+    "min = ", fmt(out$spread["min"]),
+    "   q1 = ", fmt(out$spread["q1"]),
+    "   q3 = ", fmt(out$spread["q3"]),
+    "   max = ", fmt(out$spread["max"]), "\n",
+    sep = ""
+  )
+  cat(
+    "IQR = ", fmt(out$spread["iqr"]),
+    "   range = ", fmt(out$spread["range"]), "\n\n",
+    sep = ""
+  )
+
+  cat("Shape:\n", sep = "")
+  cat(
+    "skewness = ", fmt(out$shape["skewness"]),
+    "   kurtosis = ", fmt(out$shape["kurtosis"]), "\n\n",
+    sep = ""
+  )
+
+  cat("Other:\n", sep = "")
+  cat("sum = ", fmt(out$other["sum"]), "\n", sep = "")
+
+  invisible(out)
+}
+
 # 1) CONFIDENCE INTERVALS ----
 #############################################################
 #############################################################
