@@ -1,6 +1,6 @@
 root <- normalizePath(".", winslash = "/", mustWork = TRUE)
 pkg_dir <- file.path(root, "StatsPackage -1.0")
-cheat_path <- file.path(root, "2.CheatsheetV7.r")
+cheat_path <- file.path(root, "2.CheatsheetV8.r")
 qa_dir <- file.path(root, "qa")
 log_path <- file.path(qa_dir, "cheatsheet_audit_output.txt")
 issues_path <- file.path(qa_dir, "cheatsheet_audit_issues.csv")
@@ -100,4 +100,5 @@ cat("Audit complete.\n")
 cat("Issues found:", nrow(issues), "\n")
 cat("Issue report:", issues_path, "\n")
 cat("Execution log:", log_path, "\n")
+
 

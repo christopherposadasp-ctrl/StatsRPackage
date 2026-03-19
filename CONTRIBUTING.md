@@ -27,7 +27,7 @@ devtools::check("StatsPackage -1.0")
 Optional regression run:
 
 ```r
-source("2.CheatsheetV7.r")
+source("2.CheatsheetV8.r")
 ```
 
 ## Branch and PR workflow
@@ -53,7 +53,7 @@ Required:
 
 When changing defaults or formulas, update:
 - tests
-- `2.CheatsheetV7.r`
+- `2.CheatsheetV8.r`
 - `docs/DEFAULT_POLICIES.md`
 - changelog (`StatsPackage -1.0/NEWS.md`)
 
@@ -69,4 +69,5 @@ Examples:
 
 For release-affecting changes, add a bullet under the current unreleased or next release section in:
 - `StatsPackage -1.0/NEWS.md`
+
 

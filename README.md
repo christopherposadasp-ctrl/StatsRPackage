@@ -21,7 +21,7 @@ Current package version: `0.1.4` (post-`0.1.0` stabilization)
 | Path | Purpose |
 | --- | --- |
 | `StatsPackage -1.0/` | R package source (`R/`, `man/`, `tests/`, `DESCRIPTION`) |
-| `2.CheatsheetV7.r` | End-to-end usage and output regression script |
+| `2.CheatsheetV8.r` | End-to-end usage and output regression script |
 | `scripts/qa_cheatsheet_audit.R` | Structured cheat-sheet audit runner |
 | `docs/` | Project brief and supporting documentation |
 
@@ -50,7 +50,7 @@ library(StatsPackage)
 ```r
 devtools::load_all("StatsPackage -1.0")
 devtools::test("StatsPackage -1.0")
-source("2.CheatsheetV7.r")
+source("2.CheatsheetV8.r")
 ```
 
 ## API and Defaults
@@ -102,4 +102,5 @@ The package design assumes:
 - QA and release workflow: [docs/QA_WORKFLOW.md](docs/QA_WORKFLOW.md)
 - Branch protection setup: [docs/BRANCH_PROTECTION.md](docs/BRANCH_PROTECTION.md)
 - Contributing guide: [CONTRIBUTING.md](CONTRIBUTING.md)
+
 
