@@ -1,3 +1,10 @@
+# StatsPackage 0.1.4
+
+- Add `dist = "unif"` to `chisq_gof_dist()` for continuous uniform GOF.
+- Support raw-data uniform GOF with `estimate = TRUE` using `min(x)` and `max(x)`.
+- Support grouped-count uniform GOF with fixed `min`/`max` (or `lower`/`upper`) parameters.
+- Add regression tests and cheat-sheet coverage for the uniform GOF workflow.
+
 # StatsPackage 0.1.3
 
 - Allow `chisq_gof_dist()` to use `k = 3` for exponential raw-data GOF when

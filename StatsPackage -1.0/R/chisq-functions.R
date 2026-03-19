@@ -4,7 +4,8 @@
 #' specified category probabilities.
 #'
 #' `chisq_gof_dist()` performs a chi-square goodness-of-fit test to a
-#' distribution, supporting at least Poisson, normal, and exponential models.
+#' distribution, supporting at least Poisson, normal, exponential, and
+#' continuous uniform models.
 #'
 #' `chisq_table()` performs a chi-square test for independence or homogeneity
 #' in an r x c contingency table.
@@ -25,16 +26,18 @@
 #' @param digits Integer number of decimal places used only for printed output.
 #' @param quiet Logical; if `TRUE`, suppress printed output.
 #' @param x Raw sample data for `chisq_gof_dist()`.
-#' @param dist Distribution for `chisq_gof_dist()`: `"pois"`, `"norm"`, or
-#'   `"exp"`.
+#' @param dist Distribution for `chisq_gof_dist()`: `"pois"`, `"norm"`,
+#'   `"exp"`, or `"unif"`.
 #' @param k Number of classes used for raw-data GOF tests when `breaks` is not
 #'   supplied. For continuous GOF tests, `k` must be large enough to leave
 #'   positive degrees of freedom after any parameter-estimation adjustment.
 #' @param breaks Class boundaries for grouped `chisq_gof_dist()` input.
 #' @param params Named list of distribution parameters when parameters are not
-#'   estimated from raw data.
+#'   estimated from raw data. For `dist = "unif"`, use `min`/`max` (or
+#'   `lower`/`upper`).
 #' @param estimate Logical; if `TRUE`, estimate parameters from raw data where
-#'   applicable.
+#'   applicable. For `dist = "unif"`, raw-data estimation uses `min(x)` and
+#'   `max(x)` and is not supported for grouped counts.
 #' @param params_estimated Logical; for grouped GOF inputs, whether supplied
 #'   parameters should count against the degrees of freedom.
 #' @param type For `chisq_table()`, whether the interpretation is
@@ -172,7 +175,7 @@ chisq_gof_probs <- function(observed,
 #' @export
 chisq_gof_dist <- function(x = NULL,
                            observed = NULL,
-                           dist = c("exp", "norm", "pois"),
+  dist = c("exp", "norm", "pois", "unif"),
                            k = NULL,
                            breaks = NULL,
                            params = NULL,
@@ -211,8 +214,8 @@ chisq_gof_dist <- function(x = NULL,
   group_map <- NULL
   combined <- FALSE
 
-  # ---- continuous distributions: exp / norm
-  if (dist %in% c("exp", "norm")) {
+  # ---- continuous distributions: exp / norm / unif
+  if (dist %in% c("exp", "norm", "unif")) {
     if (raw) {
       x <- as.numeric(x)
       x <- x[is.finite(x)]
@@ -286,7 +289,7 @@ chisq_gof_dist <- function(x = NULL,
       } else {
         "Chi-square GOF test: Exponential distribution (grouped counts)"
       }
-    } else {
+    } else if (dist == "norm") {
       if (raw && estimate) {
         mu <- mean(x)
         sigma <- stats::sd(x)
@@ -341,6 +344,74 @@ chisq_gof_dist <- function(x = NULL,
         "Chi-square GOF test: Normal distribution (raw data)"
       } else {
         "Chi-square GOF test: Normal distribution (grouped counts)"
+      }
+    } else {
+      if (!raw && estimate) {
+        stop(fun, ": for dist = 'unif', estimate = TRUE is supported only for raw x input.")
+      }
+
+      if (raw && estimate) {
+        lower <- min(x)
+        upper <- max(x)
+      } else {
+        if (is.null(params)) {
+          stop(fun, ": for dist = 'unif', provide params = list(min = ..., max = ...) when estimate = FALSE.")
+        }
+        lower <- params$min
+        if (is.null(lower)) lower <- params$lower
+        upper <- params$max
+        if (is.null(upper)) upper <- params$upper
+        if (is.null(lower) || is.null(upper)) {
+          stop(fun, ": for dist = 'unif', params must include min/max (or lower/upper).")
+        }
+      }
+
+      if (!is.finite(lower) || !is.finite(upper) || lower >= upper) {
+        stop(fun, ": uniform parameters must satisfy min < max.")
+      }
+
+      used_params <- list(min = lower, max = upper)
+      m_est <- if (estimate || params_estimated) 2L else 0L
+
+      if (raw) {
+        min_k <- m_est + 2L
+        if (k < min_k) {
+          stop(
+            fun,
+            ": k = ", k,
+            " is too small for dist = 'unif' with ",
+            if (m_est > 0L) "estimated" else "fixed",
+            " parameters; need at least ", min_k, " classes."
+          )
+        }
+
+        if (any(x < lower | x > upper)) {
+          stop(fun, ": raw x values must lie within the uniform support [min, max].")
+        }
+
+        if (is.null(breaks)) {
+          probs <- (1:(k - 1L)) / k
+          cuts <- stats::qunif(probs, min = lower, max = upper)
+          breaks <- c(lower, cuts, upper)
+        } else {
+          breaks <- as.numeric(breaks)
+        }
+
+        f <- cut(x, breaks = breaks, right = TRUE, include.lowest = TRUE)
+        obs0 <- as.numeric(table(f))
+        labels0 <- levels(f)
+        exp0 <- n * diff(stats::punif(breaks, min = lower, max = upper))
+      } else {
+        obs0 <- observed
+        labels0 <- .chisq_make_interval_labels(breaks)
+        exp0 <- n * diff(stats::punif(breaks, min = lower, max = upper))
+      }
+
+      breaks_used <- breaks
+      method <- if (raw) {
+        "Chi-square GOF test: Uniform distribution (raw data)"
+      } else {
+        "Chi-square GOF test: Uniform distribution (grouped counts)"
       }
     }
 

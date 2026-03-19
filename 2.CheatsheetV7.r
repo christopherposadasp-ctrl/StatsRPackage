@@ -1,3 +1,22 @@
+# setup/update only. After StatsPackage is installed once,
+# you can delete or comment out this block.
+
+
+required_version <- "0.1.4"
+
+if (!requireNamespace("remotes", quietly = TRUE)) {
+  install.packages("remotes")
+}
+
+if (!requireNamespace("StatsPackage", quietly = TRUE) ||
+    utils::packageVersion("StatsPackage") < required_version) {
+  remotes::install_github(
+    "christopherposadasp-ctrl/StatsRPackage",
+    subdir = "StatsPackage -1.0",
+    ref = required_version
+  )
+}
+# you can delete block after you install
 
 #############################################################
 # StatsPackage Cheat Sheet
@@ -34,7 +53,7 @@ defs <- list(
     "Standard error (SE): the SD of a statistic (e.g., SE(XÌ„) = Ïƒ/âˆšn). Estimated SE plugs in s for Ïƒ.",
     "Linear combination: a1X1 + â‹¯ + anXn for constants ai (special cases: sum, mean).",
     "Normal algebra (closure): linear combinations of independent normal RVs are normal. If X ~ N(Î¼, ÏƒÂ²), then aX + b ~ N(aÎ¼ + b, aÂ²ÏƒÂ²).",
-    "CLT: for large n, sums/means of iid RVs are approximately normal, regardless of population shape (approx improves as n increases).",
+    "Central limit theorem (CLT): for large n, sums/means of iid RVs are approximately normal, regardless of population shape (approx improves as n increases).",
     "Normal approximation to Binomial: if large-enough conditions hold, Bin(n,p) â‰ˆ N(np, np(1-p)); continuity correction Â±0.5."
   ),
 
@@ -87,7 +106,7 @@ defs <- list(
       "Treatment (sometimes called an intervention): the experimental condition applied to the EUs, e.g., type of gas, dose of drug, training method, etc.",
       "Bias: A study is biased if it (usually unintentionally) systematically favors certain outcomes. When a selection system is biased, taking more samples does not help!"
     ),
-
+#sd of a sample = 
     `8) Bias, Confounding, and DOE Controls` = c(
   #    "Selection bias (the catchall): A systematic tendency of the sampling procedure that results in the sample being systematically different than the target population.",
       "Non-response bias: Those sampled are not representative of the target population.",
@@ -107,7 +126,8 @@ defs <- list(
       "Double blind: An experiment is double blind if those evaluating the condition do not know if the subjects (or EUs) are in the treatment or control group."
     )
 )
-
+pnorm(.5)
+qnorm(.5)
 # 1) CONFIDENCE INTERVALS ----
 #############################################################
 #############################################################
@@ -140,6 +160,7 @@ defs <- list(
 
 # One-sample z CI
 ci_mu(xbar = 2.25, n = 36, sigma = 1.5)
+ci_mu(xbar =375, n=25, sigma=20, conf.level = 0.90)
 
 # One-sample t CI
 ci_mu(xbar = 12.4, n = 15, s = 3.2)
@@ -237,7 +258,8 @@ ci_lambda_exp(Sum = 25, n = 5, conf.level = 0.90)
 
 n_width_mu_z(w = 2, sigma = 10)
 
-
+n_width_mu_z(w = 20, sigma = 20, conf.level = 0.95)  # z-based width planning when sigma is known
+# strong negative coralation means 
 #############################################################
 ## Mu target width T----
 # n_width_mu_t(
@@ -276,7 +298,7 @@ n_width_mu_t(w = 4, s = 15)  # t-based width planning when sigma is unknown
 #############################################################
 
 # Worst-case planning
-n_width_p_wald(w = 0.10, worst_case = TRUE)
+n_width_p_wald(w = 0.10, worst_case = TRUE, conf.level = 0.95)
 
 # Planning with guessed p
 n_width_p_wald(w = 0.10, p = 0.30, worst_case = FALSE)
@@ -339,13 +361,15 @@ z_test_mu(xbar = 30500, mu0 = 30000, sigma = 1500, n = 75,
 
 # One-sample t test
 t_test_mu(xbar = 5.4, mu0 = 5, s = 1.2, n = 20)
-
+t_test_mu(xbar= 10.4, mu0 = 10, s = .5, n = 5, alpha = 0.01, alternative = "greater")
+pt(1.78, df=4, lower.tail = FALSE)
 # One-sample one-sided t test
 t_test_mu(xbar = 5.4, mu0 = 5, s = 1.2, n = 20, alternative = "greater")
 
 # Two-sample Welch t test
 t_test_mu(xbar = c(10, 8), mu0 = 0, s = c(3, 2.5), n = c(20, 18), var.equal = FALSE)
-
+t_test_mu(xbar = c(110, 120), mu0 = -4, s = c(5, 6), n = c(9, 7), var.equal = FALSE, alternative = "less", alpha = 0.05)
+ci_mu(xbar = c(110, 120), n = c(9, 7), s = c(5, 6), method = "welch")
 # Two-sample pooled t test
 t_test_mu(xbar = c(10, 8), mu0 = 0, s = c(3, 3.1), n = c(20, 20), var.equal = TRUE)
 
@@ -381,10 +405,10 @@ p_test(x = 21, n = 100, p0 = 0.20)
 
 # One-sample one-sided exact test
 p_test(x = 21, n = 100, p0 = 0.20, alternative = "greater")
-
+p_test(x = 8, n = 10, p0 = 0.60, alternative = "greater")
 # Two-sample equality test: default pooled, no continuity correction
 p_test(x = c(35, 24), n = c(100, 100), p0 = 0)
-
+p_test(x = c(344, 156), n = c(4000, 4000), p0 = 0, pooled = FALSE)
 # Two-sample equality test: explicit unpooled version
 p_test(x = c(35, 24), n = c(100, 100), p0 = 0, pooled = FALSE)
 
@@ -415,7 +439,7 @@ var_test_chisq(s = 4.2, n = 12, sigma0 = 5)
 
 # Two-sample F test for ratio of variances
 var_test_chisq(s = c(4.2, 5.0), n = c(12, 10), ratio0 = 1)
-
+var_test_chisq(s = c(52.6, 84.2), n = c(8, 6), ratio0 = 1, alternative = "less", alpha = 0.1)
 # One-sample one-sided variance test
 var_test_chisq(s = 4.2, n = 12, sigma0 = 5, alternative = "greater")
 
@@ -469,17 +493,19 @@ adh2 <- c(213, 179, 163, 247, 225)
 
 wilcox.test(adh1, adh2, alternative = "greater")
 
-m1 <- c(44.85, 46.59, 47.60, 51.08, 52.20,
-        56.87, 57.03, 57.07, 60.35, 60.82,
-        67.30, 70.15, 70.77, 75.21, 75.28,
-        76.60, 80.30, 81.23)
+Prior <- c(29,98,49,61,13,92,20,85,39,66)
 
-m2 <- c(51.95, 56.54, 57.40, 57.60, 61.16,
-        39.91, 42.01, 43.58, 48.83, 49.07,
-        49.48, 49.57, 49.63, 50.75, 64.55,
-        65.31, 68.59, 72.40)
-
-wilcox.test(m1, m2, alternative = "two.sided")
+Post <- c(33,91,37,49,5,80,9,74,31,59)
+cor(Prior, Post)
+wilcox.test(Prior, Post, paired = TRUE,  conf.level = 0.95, exact = FALSE, correct = TRUE)
+wilcox.test(
+  Prior,
+  Post,
+  paired = TRUE,
+  alternative = "greater",
+  exact = FALSE,
+  correct = TRUE, conf.level = 0.95
+)
 #############################################################
 ## Categorical Data / Chi-Square ----
 #############################################################
@@ -507,17 +533,19 @@ chisq_gof_probs(
 )
 
 # Specified multinomial GOF (Mendel 9:3:3:1)
-chisq_gof_probs(
-  observed = c(315, 108, 101, 32),
-  p = c(9, 3, 3, 1) / 16,
-  labels = c("Round Yellow", "Round Green", "Wrinkled Yellow", "Wrinkled Green")
-)
 
+chisq_gof_probs(
+  observed = c(7, 15, 8),               # observed counts in each category
+  p = c(1/3, 1/3, 1/3),                   # null/theoretical category probabilities
+  labels = c("0-1", "1-2",      # names printed with the output table
+             "2-3"), alpha = 0.10, digits = 3
+)
+y
 #############################################################
 # chisq_gof_dist(
 #   x = NULL,
 #   observed = NULL,
-#   dist = c("exp", "norm", "pois"),
+#   dist = c("exp", "norm", "pois", "unif"),
 #   k = NULL,
 #   breaks = NULL,
 #   params = NULL,
@@ -533,6 +561,7 @@ chisq_gof_probs(
 #   x + estimate = TRUE      -> raw data GOF with parameter estimation
 #   observed + breaks        -> grouped continuous-data GOF
 #   observed + dist = "pois" -> grouped count-data GOF
+#   dist = "unif"            -> continuous uniform GOF on [min, max]
 #############################################################
 
 # Exponential GOF from raw data
@@ -556,6 +585,27 @@ chisq_gof_dist(
   params_estimated = TRUE
 )
 
+# Uniform GOF from raw data (estimate min and max from x)
+chisq_gof_dist(
+  x = c(0.02, 0.05, 0.08, 0.15,
+        0.28, 0.31, 0.33, 0.37, 0.41, 0.45,
+        0.53, 0.56, 0.59, 0.63, 0.68, 0.72,
+        0.76, 0.79, 0.83, 0.87, 0.89, 0.91, 0.95, 0.99),
+  dist = "unif",
+  k = 4,
+  estimate = TRUE
+)
+x <- c(0.074, 0.375, 0.558, 0.559, 0.584, 0.768, 0.935, 1.077, 1.080, 1.182, 1.193, 1.193, 1.207, 1.234, 1.264, 1.278, 1.288, 1.479, 1.639, 1.806, 1.847, 1.904, 2.102, 2.170, 2.183, 2.256, 2.260, 2.275, 2.507, 2.903)
+x
+sqrt(.75)
+y<- c(0.074, 0.375, 0.558, 0.559, 0.584, 0.768, 0.935, 1.077, 1.080, 1.182, 1.193, 1.193, 1.207, 1.234, 1.264, 1.278, 1.288, 1.479, 1.639, 1.806, 1.847, 1.904, 2.102, 2.170, 2.183, 2.256, 2.260, 2.275, 2.507, 2.903)
+y
+chisq_gof_dist(
+  x = y,
+  dist = "unif",
+  breaks = c(0, 1, 2, 3),
+  params = list(min = 0, max = 3)
+)
 # Poisson GOF from grouped count frequencies
 chisq_gof_dist(
   observed = c(1627, 421, 219, 130, 107, 51, 15, 22,
@@ -597,12 +647,26 @@ smoking_tab <- matrix(
   byrow = TRUE,
   dimnames = list(c("<16", "16-17", "18-20", ">20"), c("Male", "Female"))
 )
-
+UAV_tab <- matrix(
+  c(37, 23,
+    11, 15),
+  nrow = 2,
+  byrow = TRUE,
+  dimnames = list(c("Success", "Failed"), c("AOR_1", "AOR_2"))
+)
+Class_tab <- matrix(
+  c(187, 112, 186,
+    117, 163, 526),
+  nrow = 2,
+  byrow = TRUE,
+  dimnames = list(c("survived", "Died"), c("1st Class", "2nd Class", "3rd Class"))
+)
 # Row proportions
-table_props(smoking_tab, margin = "row")
-
+table_props(Class_tab, margin = "overall")
+table_props(UAV_tab, margin = "col")
 # Column proportions
 table_props(smoking_tab, margin = "col")
+table_props(smoking_tab, margin = "row")
 
 # Overall proportions
 table_props(smoking_tab, margin = "overall")
@@ -624,6 +688,7 @@ table_props(smoking_tab, margin = "overall")
 #############################################################
 # Independence example
 chisq_table(smoking_tab, type = "independence")
+chisq_table(UAV_tab,type = "independence")
 
 spirituality_tab <- matrix(
   c(56, 162, 198, 211,
@@ -633,7 +698,7 @@ spirituality_tab <- matrix(
   byrow = TRUE,
   dimnames = list(c("N.S.", "S.S.", "G.D."), c("Very", "Moderate", "Slightly", "Not at all"))
 )
-
+chisq_table(Class_tab,type = "independence", alpha = 0.01)
 # Homogeneity example
 chisq_table(spirituality_tab, type = "homogeneity")
 
@@ -659,7 +724,7 @@ chisq_table(spirituality_tab, type = "homogeneity")
 #############################################################
 
 # One-sample z power
-power_z_mu(mu_a = 103, mu0 = 100, sigma = 10, n = 64)
+power_z_mu(mu_a = 10.4, mu0 = 10, sigma = .5, n = 5, alpha = 0.01, alternative = "greater")
 
 # Two-sample z power (known sigmas)
 power_z_mu(mu_a = c(82, 77), mu0 = 0, sigma = c(12, 10), n = c(64, 49),
@@ -689,7 +754,7 @@ power_z_mu(mu_a = 30500, mu0 = 30000, sigma = 1500, n = 75,
 #############################################################
 
 # One-sample t power
-power_t_mu(mu_a = 5.4, mu0 = 5, sigma_true = 1.2, n = 20)
+power_t_mu(mu_a = 10.4, mu0 = 10, sigma_true = 1.2, n = 20)
 
 # Two-sample Welch t power
 power_t_mu(mu_a = c(10, 8), mu0 = 0, sigma_true = c(3, 2.5), n = c(20, 18), method = "welch")
@@ -831,6 +896,9 @@ n_required_z_mu(mu_a = 30500, mu0 = 30000, sigma = 1500,
                 alpha = 0.01, beta_target = 0.05,
                 alternative = "greater")
 
+n_required_z_mu(mu_a = 10.5, mu0 = 10, sigma = 0.6,
+                alpha = 0.01, beta_target = 0.2,
+                alternative = "greater")
 # Two-sample required n
 n_required_z_mu(mu_a = c(65, 63), mu0 = 0, sigma = c(3, 2.5),
                 alpha = 0.05, beta_target = 0.10,
@@ -1154,4 +1222,14 @@ out <- chisq_gof_dist(
 
 out$df
 out$expected
+#z.025 means
+qnorm(0.025) 
+qnorm(.975)
+pnorm(1.96)-pnorm(-1.96)
+qt(.99,30)
+qf(.001,9,1)  
 
+pchisq(15.987,10) - pchisq(2.588,10)
+qf(.5, 30, 30) 
+
+(((15/29)^2)*(58/15))+(((14/29)^2)*(58/14))+(((14/29)^2)*(15/29)*2*((58/14)+(29/15)))+(((15/29)^2)*(14/29)*2*((58/25)+(29/14)))

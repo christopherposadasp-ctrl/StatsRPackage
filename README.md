@@ -14,7 +14,7 @@ The project priorities are:
 - reusable workflows beyond a single assignment
 - regression-tested behavior
 
-Current package version: `0.1.3` (post-`0.1.0` stabilization)
+Current package version: `0.1.4` (post-`0.1.0` stabilization)
 
 ## Repository Layout
 
@@ -34,13 +34,13 @@ devtools::install("StatsPackage -1.0")
 library(StatsPackage)
 ```
 
-Install from GitHub (canonical classroom deployment command, pinned to `0.1.3`):
+Install from GitHub (canonical classroom deployment command, pinned to `0.1.4`):
 
 ```r
 remotes::install_github(
   "christopherposadasp-ctrl/StatsRPackage",
   subdir = "StatsPackage -1.0",
-  ref = "0.1.3"
+  ref = "0.1.4"
 )
 library(StatsPackage)
 ```

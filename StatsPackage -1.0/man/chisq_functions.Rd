@@ -21,7 +21,7 @@ chisq_gof_probs(
 chisq_gof_dist(
   x = NULL,
   observed = NULL,
-  dist = c("exp", "norm", "pois"),
+  dist = c("exp", "norm", "pois", "unif"),
   k = NULL,
   breaks = NULL,
   params = NULL,
@@ -72,8 +72,8 @@ where implemented, class combining.}
 
 \item{x}{Raw sample data for \code{chisq_gof_dist()}.}
 
-\item{dist}{Distribution for \code{chisq_gof_dist()}: \code{"pois"}, \code{"norm"}, or
-\code{"exp"}.}
+\item{dist}{Distribution for \code{chisq_gof_dist()}: \code{"pois"}, \code{"norm"},
+\code{"exp"}, or \code{"unif"}.}
 
 \item{k}{Number of classes used for raw-data GOF tests when \code{breaks} is not
 supplied. For continuous GOF tests, \code{k} must be large enough to leave
@@ -82,10 +82,12 @@ positive degrees of freedom after any parameter-estimation adjustment.}
 \item{breaks}{Class boundaries for grouped \code{chisq_gof_dist()} input.}
 
 \item{params}{Named list of distribution parameters when parameters are not
-estimated from raw data.}
+estimated from raw data. For \code{dist = "unif"}, use \code{min}/\code{max}
+(or \code{lower}/\code{upper}).}
 
 \item{estimate}{Logical; if \code{TRUE}, estimate parameters from raw data where
-applicable.}
+applicable. For \code{dist = "unif"}, raw-data estimation uses \code{min(x)}
+and \code{max(x)} and is not supported for grouped counts.}
 
 \item{params_estimated}{Logical; for grouped GOF inputs, whether supplied
 parameters should count against the degrees of freedom.}
@@ -113,7 +115,8 @@ specified category probabilities.
 }
 \details{
 \code{chisq_gof_dist()} performs a chi-square goodness-of-fit test to a
-distribution, supporting at least Poisson, normal, and exponential models.
+distribution, supporting at least Poisson, normal, exponential, and
+continuous uniform models.
 
 \code{chisq_table()} performs a chi-square test for independence or homogeneity
 in an r x c contingency table.

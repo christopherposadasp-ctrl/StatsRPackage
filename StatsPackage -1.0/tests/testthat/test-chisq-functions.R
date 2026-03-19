@@ -74,6 +74,53 @@ test_that("chisq_gof_dist allows k = 3 for exponential raw data when df stays po
   expect_equal(out$chi_stat, sum(out$contrib), tolerance = 1e-12)
 })
 
+test_that("chisq_gof_dist supports raw uniform GOF with estimated bounds", {
+  x <- seq(0, 1, length.out = 30)
+
+  out <- chisq_gof_dist(
+    x = x,
+    dist = "unif",
+    k = 5,
+    estimate = TRUE,
+    quiet = TRUE
+  )
+
+  expect_s3_class(out, "htest_result")
+  expect_equal(out$params$min, 0, tolerance = 1e-12)
+  expect_equal(out$params$max, 1, tolerance = 1e-12)
+  expect_equal(as.numeric(out$expected), rep(6, 5), tolerance = 1e-10)
+  expect_equal(out$df, 2)
+  expect_equal(out$chi_stat, sum(out$contrib), tolerance = 1e-12)
+})
+
+test_that("chisq_gof_dist supports grouped uniform GOF with fixed bounds", {
+  out <- chisq_gof_dist(
+    observed = c(10, 10, 10, 10),
+    breaks = seq(0, 1, by = 0.25),
+    dist = "unif",
+    params = list(lower = 0, upper = 1),
+    quiet = TRUE
+  )
+
+  expect_s3_class(out, "htest_result")
+  expect_equal(as.numeric(out$expected), rep(10, 4), tolerance = 1e-12)
+  expect_equal(out$df, 3)
+  expect_equal(out$chi_stat, sum(out$contrib), tolerance = 1e-12)
+})
+
+test_that("chisq_gof_dist rejects grouped uniform GOF when estimate = TRUE", {
+  expect_error(
+    chisq_gof_dist(
+      observed = c(10, 10, 10, 10),
+      breaks = seq(0, 1, by = 0.25),
+      dist = "unif",
+      estimate = TRUE,
+      quiet = TRUE
+    ),
+    "supported only for raw x input"
+  )
+})
+
 test_that("chisq_gof_dist rejects k = 3 for normal raw data with estimated parameters", {
   x <- seq(-2.45, 2.45, length.out = 50)
 
