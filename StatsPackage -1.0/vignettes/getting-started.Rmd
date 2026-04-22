@@ -58,6 +58,16 @@ var_test_chisq(s = 4.2, n = 12, sigma0 = 5, alternative = "two.sided", quiet = T
 ```{r}
 obs <- c(18, 35, 31, 16)
 chisq_gof_probs(observed = obs, p = c(0.2, 0.3, 0.3, 0.2), quiet = TRUE)
+chisq_gof_dist(
+  x = c(0.02, 0.05, 0.08, 0.15,
+        0.28, 0.31, 0.33, 0.37, 0.41, 0.45,
+        0.53, 0.56, 0.59, 0.63, 0.68, 0.72,
+        0.76, 0.79, 0.83, 0.87, 0.89, 0.91, 0.95, 0.99),
+  dist = "unif",
+  k = 4,
+  estimate = TRUE,
+  quiet = TRUE
+)
 ```
 
 ```{r}
