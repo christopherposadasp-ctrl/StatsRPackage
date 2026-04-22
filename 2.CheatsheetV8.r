@@ -2,7 +2,7 @@
 # you can delete or comment out this block.
 
 
-required_version <- "0.1.4"
+required_version <- "1.0.0"
 
 if (!requireNamespace("remotes", quietly = TRUE)) {
   install.packages("remotes")

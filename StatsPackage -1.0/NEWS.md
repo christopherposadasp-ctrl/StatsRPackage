@@ -1,3 +1,12 @@
+# StatsPackage 1.0.0
+
+- Declare the public API stable for the package's intended introductory
+  inference workflows.
+- Finalize the 1.0 freeze gate with aligned documentation, cheat-sheet
+  regression validation, and release QA automation.
+- Keep exported functions, defaults, and return-object conventions fixed as
+  the 1.0 baseline unless a correctness issue requires a future patch.
+
 # StatsPackage 0.1.4
 
 - Add `dist = "unif"` to `chisq_gof_dist()` for continuous uniform GOF.
