@@ -35,7 +35,7 @@ For argument-level help in R, use `?function_name` after loading the package.
 | Function | Summary |
 | --- | --- |
 | `chisq_gof_probs()` | Goodness-of-fit test to specified category probabilities |
-| `chisq_gof_dist()` | Goodness-of-fit test to distributions (`pois`, `norm`, `exp`) |
+| `chisq_gof_dist()` | Goodness-of-fit test to distributions (`pois`, `norm`, `exp`, `unif`) |
 | `chisq_table()` | Chi-square test for independence/homogeneity in contingency tables |
 | `table_props()` | Row/column/overall descriptive proportions for contingency tables |
 
@@ -74,4 +74,3 @@ Most families follow these conventions:
 - `quiet = TRUE` suppresses printed output
 - return values are invisible, classed objects with full computational fields
 - result objects include decision-critical fields such as statistic, p-value or power/beta, and rejection region/critical values when relevant
-

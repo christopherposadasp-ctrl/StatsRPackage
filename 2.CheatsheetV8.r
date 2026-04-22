@@ -408,7 +408,7 @@ p_test(x = 21, n = 100, p0 = 0.20, alternative = "greater")
 p_test(x = 8, n = 10, p0 = 0.60, alternative = "greater")
 # Two-sample equality test: default pooled, no continuity correction
 p_test(x = c(35, 24), n = c(100, 100), p0 = 0)
-p_test(x = c(344, 156), n = c(4000, 4000), p0 = 0, pooled = FALSE)
+p_test(x = c(344, 156), n = c(4000, 4000), p0 = 0)
 # Two-sample equality test: explicit unpooled version
 p_test(x = c(35, 24), n = c(100, 100), p0 = 0, pooled = FALSE)
 

@@ -25,7 +25,7 @@ if (!requireNamespace("StatsPackage", quietly = TRUE)) {
     stop("StatsPackage is not installed. Install it first or install devtools for local fallback install.")
   }
   cat("StatsPackage not found in library. Installing from local package directory...\n")
-  devtools::install(pkg_dir, upgrade = "never", quiet = TRUE, dependencies = FALSE)
+  devtools::install(pkg_dir, upgrade = FALSE, quiet = TRUE, dependencies = FALSE)
 }
 
 suppressPackageStartupMessages(library(StatsPackage))
@@ -190,4 +190,3 @@ cat("Execution log:", log_path, "\n")
 if (n_fail > 0L) {
   stop("Smoke test failed: ", n_fail, " check(s) failed. See results/log under qa/.")
 }
-

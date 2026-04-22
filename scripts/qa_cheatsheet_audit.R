@@ -19,7 +19,7 @@ if (!requireNamespace("devtools", quietly = TRUE)) {
   stop("devtools is required for the cheat sheet audit.")
 }
 
-devtools::install(pkg_dir, upgrade = "never", quiet = TRUE, dependencies = FALSE)
+devtools::install(pkg_dir, upgrade = FALSE, quiet = TRUE, dependencies = FALSE)
 suppressPackageStartupMessages(library(StatsPackage))
 
 lines <- readLines(cheat_path, warn = FALSE, encoding = "UTF-8")
