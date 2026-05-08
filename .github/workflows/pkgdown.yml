@@ -38,7 +38,7 @@ jobs:
           needs: website
 
       - name: Build pkgdown site
-        run: Rscript -e "pkgdown::build_site('StatsPackage -1.0', install = FALSE, new_process = FALSE)"
+        run: Rscript -e "pkgdown::build_site('StatsPackage -1.0', install = TRUE, new_process = FALSE)"
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
