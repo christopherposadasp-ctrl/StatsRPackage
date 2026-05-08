@@ -1,341 +1,346 @@
-# Mathematical Correctness and Code Efficiency Audit Plan
+# Mathematical Correctness And Code Efficiency Audit Plan
 
-This plan is for a future audit of `StatsPackage`, an R package for
+This document is the living audit roadmap for `StatsPackage`, an R package for
 introductory statistical inference and design workflows.
 
-Audit baseline: StatsPackage 1.1.0 on main, after the `pi_mu()` release and
-pkgdown workflow fix.
+## Current State
 
-The audit focus is:
+The first mathematical correctness and stability audit is complete and merged.
 
-- mathematical correctness
-- code efficiency
-- simplification where behavior can be preserved
+- Merged PR: `#12` (`Mathematical correctness and efficiency audit`)
+- Merge commit on `main`: `9b647bb`
+- Final audit branch commit before merge: `14d73d1`
+- Package version: `1.1.0`
+- Published release tag checked and not altered: `1.1.0`
+- Exported function count: `29`
+- Final local full test output: `FAIL 0 | WARN 0 | SKIP 0 | PASS 628`
+- Final cheat-sheet audit output: `Issues found: 0`
+- Clean GitHub Actions result for PR `#12`: `CI`, `Coverage`, and `Lint` all
+  passed
+- `devtools::check()` passed in clean CI on:
+  - `ubuntu-latest / R-release`
+  - `ubuntu-latest / R-devel`
+  - `windows-latest / R-release`
+  - `macos-latest / R-release`
+- Local Windows `Rcmd.exe` / Rscript exit status `-1073741569` remains a local
+  environment anomaly because it did not reproduce in CI.
 
-The audit must not change public API behavior unless a mathematical
-correctness issue requires it.
+The completed audit found no mathematical formula defects. One production-code
+change was made: upper-tail probability calculations now use explicit
+`lower.tail = FALSE` calls where that improves extreme-tail numerical
+stability.
 
-## Audit Constraints
+## Completed Audit Goals
 
-- Preserve exported function names, argument meanings, defaults, and result
-  object conventions unless a correctness issue requires a change.
-- Outside of testing files, code should not grow longer unless it is
-  mathematically necessary.
-- Prefer simplification, removal of duplication, and clearer existing logic
-  over adding new abstraction.
-- Keep printed summaries and invisible classed return objects consistent with
-  current package conventions.
-- Preserve `quiet`, `digits`, `alpha`, and `conf.level` behavior across
-  families.
-- Do not treat formatting-only preferences as audit defects unless they affect
-  correctness, API consistency, or meaningful maintainability.
-- Run the audit on a non-`main` branch.
+The completed Phase 0-9 audit established and preserved:
+
+- the 29-function public API;
+- exported function names, argument names, defaults, result classes, and result
+  fields;
+- `quiet`, `digits`, `alpha`, and `conf.level` conventions;
+- unrounded stored computational values;
+- printed-output templates, except for mathematically equivalent values caused
+  by the intentional upper-tail stability fix;
+- documented default policies in `docs/DEFAULT_POLICIES.md`;
+- user-facing API coverage in `docs/API_INDEX.md`, generated `.Rd` aliases,
+  the cheat sheet, README links, and the getting-started vignette;
+- release tag integrity for `1.1.0`.
+
+Completed findings are recorded in:
+
+- `docs/MATH_EFFICIENCY_AUDIT_BASELINE.md`
+- `docs/MATH_EFFICIENCY_PHASE1_FINDINGS.md`
+- `docs/MATH_EFFICIENCY_PHASE2_PI_MU_FINDINGS.md`
+- `docs/MATH_EFFICIENCY_PHASE2_CONFIDENCE_WIDTH_FINDINGS.md`
+- `docs/MATH_EFFICIENCY_PHASE3_HYPOTHESIS_FINDINGS.md`
+- `docs/MATH_EFFICIENCY_PHASE4_POWER_FINDINGS.md`
+- `docs/MATH_EFFICIENCY_PHASE5_N_REQUIRED_FINDINGS.md`
+- `docs/MATH_EFFICIENCY_PHASE6_CHISQ_FINDINGS.md`
+- `docs/MATH_EFFICIENCY_PHASE7_SHAPE_FINDINGS.md`
+- `docs/MATH_EFFICIENCY_PHASE8_EFFICIENCY_FINDINGS.md`
+- `docs/MATH_EFFICIENCY_AUDIT_FINAL_REPORT.md`
+
+## Standing Constraints
+
+These constraints apply to any follow-up audit work:
+
+- Work on a non-`main` branch.
 - Do not retag, rewrite, or otherwise alter the published `1.1.0` release.
+- Preserve public API behavior unless a confirmed mathematical or numerical
+  correctness issue requires a change.
+- Preserve printed summaries and invisible classed return objects.
+- Outside tests, production code should not grow unless the change fixes a
+  confirmed mathematical, numerical-stability, runtime, or memory issue.
+- Prefer local simplification, removal of duplication, and clearer existing
+  logic over broad new abstraction.
+- Do not make formatting-only or style-only refactors.
+- Do not update generated `.Rd`, README, vignette, or cheat sheet unless public
+  behavior or documentation becomes inaccurate.
 
-## Phase 0: Baseline And Audit Setup
+## Completed Phase Summary
 
-### 0.1 Establish The Baseline
+### Phase 0: Baseline And Audit Setup
 
-- Record current package version from `StatsPackage -1.0/DESCRIPTION`.
-- Review current `NEWS.md` to identify recent or high-risk changes.
-- Treat `pi_mu()` as a recent/high-risk exported API because it was added in
-  the `1.1.0` release.
-- Confirm the exported API from `NAMESPACE` and `docs/API_INDEX.md`.
-- Confirm default-policy commitments from `docs/DEFAULT_POLICIES.md`.
+Completed. Recorded package version, release tag, exported API count, newest
+API risk (`pi_mu()`), baseline tests, cheat-sheet audit, and local
+`devtools::check()` environment blocker.
 
-### 0.2 Capture Baseline QA
+### Phase 1: API And Default-Policy Lock
 
-- Run the fast test suite with `devtools::test("StatsPackage -1.0")`.
-- Run the package check if the audit will touch broad behavior.
-- Run the cheat-sheet regression script or structured audit runner when output
-  behavior may be affected.
-- Save notable baseline warnings, failures, or environment issues before
-  making changes.
+Completed. Confirmed the 29 exported functions, signatures, result-object
+contracts, `quiet` and `digits` behavior, and default-policy commitments.
 
-### 0.3 Define Reference Cases
+### Phase 2: Prediction, Confidence, And Width Families
 
-- Build a small set of hand-checkable cases for each statistical family.
-- Include boundary cases, one-sided cases, two-sided cases, and degenerate or
-  near-degenerate inputs where the public API currently supports them.
-- Prefer independent checks from base R functions, textbook formulas, or direct
-  distribution calculations.
+Completed. Audited `pi_mu()`, `ci_mu()`, `ci_p()`, `ci_var()`,
+`ci_lambda_exp()`, `n_width_mu_z()`, `n_width_mu_t()`, and
+`n_width_p_wald()`. No production formula defects were found. Focused formula
+tests were added.
 
-## Phase 1: API And Default-Policy Lock
+### Phase 3: Hypothesis Test Families
 
-### 1.1 Public API Inventory
+Completed. Audited `z_test_mu()`, `t_test_mu()`, `p_test()`, and
+`var_test_chisq()`. No production formula defects were found. Focused tests
+were added for under-covered tails, critical values, continuity correction, and
+variance-ratio behavior.
 
-- Verify exported functions match the documented API index.
-- Verify each exported function has stable argument names and meanings.
-- Identify any undocumented public behavior used by the cheat sheet.
+### Phase 4: Power Families
 
-### 1.2 Result Object Contract
+Completed. Audited `power_z_mu()`, `power_t_mu()`, `power_p_z()`,
+`power_var_chisq()`, and `power_var_ratio_F()`. No production formula defects
+were found. Focused formula tests were added.
 
-- Confirm each function returns an invisible, classed list result.
-- Confirm computational fields are unrounded.
-- Confirm printed output uses `digits` only for display.
-- Confirm `quiet = TRUE` suppresses printing.
+### Phase 5: Required Sample Size For Target Power
 
-### 1.3 Default Policy Review
+Completed. Audited the generic solver and required-n wrappers. Minimality,
+allocation ratios, unreachable-target errors, and achieved-power fields matched
+the intended contracts. Focused tests were added.
 
-- Preserve one-sample exact binomial behavior in `p_test()`.
-- Preserve two-sample proportion defaults:
-  - `p0 = 0`: pooled by default
-  - `p0 != 0`: unpooled by default
-  - continuity correction off by default
-  - `pooled = TRUE` with nonzero `p0` errors
-- Preserve lower-tail OR upper-tail two-sided rejection regions for chi-square
-  and F variance tests.
-- Preserve `pi_mu()` as a prediction interval for one future observation, not
-  a confidence interval for `mu`.
+### Phase 6: Chi-Square And Categorical Procedures
 
-## Phase 2: Confidence, Prediction, And Width Families
+Completed. Audited `chisq_gof_probs()`, `chisq_gof_dist()`, `chisq_table()`,
+and `table_props()`. No production formula defects were found. Focused tests
+were added. A non-blocking label-handling observation was recorded for named
+one-way observed vectors in `chisq_gof_probs()`.
 
-### 2.1 Mean Confidence Intervals: `ci_mu()`
+### Phase 7: Shape Helpers
 
-- Check one-sample z interval formulas with known `sigma`.
-- Check one-sample t interval formulas with sample `s`.
-- Check paired t intervals on summary statistics for differences.
-- Check two-sample z intervals with known sigmas.
-- Check Welch t interval degrees of freedom and standard error.
-- Check pooled t interval pooled variance, degrees of freedom, and standard
-  error.
-- Check one-sided lower and upper interval bounds.
+Completed. Audited `skew()` and `kurt()` estimators, validation, result
+contracts, and interpretation labels. No production formula defects were found.
+Focused tests were added.
 
-### 2.2 Proportion Confidence Intervals: `ci_p()`
+### Phase 8: Initial Efficiency And Numerical Stability Pass
 
-- Check one-sample exact Clopper-Pearson interval behavior.
-- Check optional one-sample Wald behavior if retained.
-- Check two-sample Wald interval for `p1 - p2`.
-- Review warning behavior for small success or failure counts.
+Completed. Broad helper extraction was rejected as likely to increase code
+length or risk output drift. One safe numerical-stability fix was made:
+upper-tail probabilities now use `lower.tail = FALSE` where appropriate.
 
-### 2.3 Variance And Exponential Confidence Intervals
+### Phase 9: Final Regression, Documentation Alignment, And Closeout
 
-- Check one-sample variance and SD chi-square intervals in `ci_var()`.
-- Check two-sample F interval for `sigma1^2 / sigma2^2`.
-- Check zero-variance edge handling.
-- Check exponential rate interval in `ci_lambda_exp()` using chi-square
-  quantiles with `df = 2n`.
+Completed. Confirmed final API/docs/default-policy alignment, final local QA,
+clean CI across OS/R matrix, and final report.
 
-### 2.4 Prediction Intervals: `pi_mu()`
+## Follow-Up Code Efficiency Audit
 
-- Check z prediction interval with known `sigma`.
-- Check t prediction interval with sample `s` and `df = n - 1`.
-- Verify standard error uses `sqrt(1 + 1 / n)`.
-- Verify one-sided prediction intervals behave consistently with `ci_mu()`.
-- Confirm two-sample, paired, pooled, Welch, and regression prediction
-  intervals remain out of scope.
+The mathematical audit was deliberately broad and conservative. The code
+efficiency portion received only one focused phase. The follow-up work below is
+intended to audit efficiency and maintainability more deliberately without
+reopening mathematical behavior that is already locked.
 
-### 2.5 Width Planning
+## Phase 10: Efficiency Baseline And Static Inventory
 
-- Check `n_width_mu_z()` uses total width `w`, not half-width.
-- Check `n_width_mu_t()` iteration, post-check search, convergence flags, and
-  minimality.
-- Check `n_width_p_wald()` worst-case and planning-proportion paths.
-- Verify achieved width fields and minimality indicators.
+### 10.1 Branch And Baseline
 
-## Phase 3: Hypothesis Test Families
+- Start from `main` at or after merge commit `9b647bb`.
+- Create a non-`main` branch, recommended:
+  `codex/code-efficiency-audit`.
+- Confirm exported function count remains `29`.
+- Run and record:
+  - `devtools::test("StatsPackage -1.0")`
+  - `Rscript scripts/qa_cheatsheet_audit.R`
+- Treat local `devtools::check()` as non-blocking unless the local Rscript
+  anomaly has been fixed.
 
-### 3.1 Mean Tests
+### 10.2 Static Inventory
 
-- Check `z_test_mu()` one-sample and two-sample statistics, p-values, critical
-  values, and rejection regions.
-- Check `t_test_mu()` one-sample, paired, Welch, and pooled branches.
-- Verify one-sided alternatives use the correct tail.
-- Verify estimate-critical boundaries match statistic-critical boundaries.
+Review production code for:
 
-### 3.2 Proportion Tests
+- repeated validation logic;
+- repeated critical-value and tail-selection logic;
+- repeated result construction;
+- repeated printed-output construction;
+- repeated sample-size search patterns;
+- unnecessary recomputation inside loops;
+- branch complexity that can be simplified locally.
 
-- Check `p_test()` one-sample exact binomial branch against `binom.test()`.
-- Check two-sample z tests with pooled and unpooled standard errors.
-- Check nonzero null difference behavior.
-- Check continuity correction formulas for less, greater, and two-sided
-  alternatives.
-- Verify adequacy warnings do not alter computations.
+Primary review targets:
 
-### 3.3 Variance Tests
+- `StatsPackage -1.0/R/n-required-functions.R`
+- `StatsPackage -1.0/R/power-functions.R`
+- `StatsPackage -1.0/R/hypothesis-test-functions.R`
+- `StatsPackage -1.0/R/chisq-functions.R`
 
-- Check one-sample chi-square variance statistic and p-values.
-- Check two-sample F variance-ratio statistic and p-values.
-- Verify two-sided p-values and rejection regions are tail-based.
-- Confirm `ratio0` and `sigma0` are accepted or ignored only in documented
-  branches.
+Secondary targets:
 
-## Phase 4: Power Families
+- helper files that already support simplification;
+- confidence/prediction/shape files only if the static inventory finds clear
+  duplication or recomputation.
 
-### 4.1 Mean Power
+### 10.3 Inventory Deliverable
 
-- Check `power_z_mu()` against direct normal calculations.
-- Check `power_t_mu()` one-sample and paired noncentral t calculations.
-- Check pooled two-sample t power with equal-variance assumptions.
-- Check Welch two-sample t power approximation and degrees of freedom.
+Create `docs/MATH_EFFICIENCY_PHASE10_EFFICIENCY_BASELINE.md` with:
 
-### 4.2 Proportion Power
+- reviewed files;
+- repeated patterns found;
+- candidate hotspots;
+- rejected cosmetic-only refactors;
+- baseline QA results;
+- a candidate list for profiling.
 
-- Check one-sample normal approximation against direct distribution formulas.
-- Check two-sample pooled and unpooled branches.
-- Check nonzero `p0` behavior.
-- Check continuity correction support and any documented limitations.
-- Verify boundary probabilities and zero-variance cases are handled
-  intentionally.
+No production edits should occur in Phase 10.
 
-### 4.3 Variance Power
+## Phase 11: Runtime Profiling And Hotspot Triage
 
-- Check `power_var_chisq()` using chi-square scaling under the alternative.
-- Check `power_var_ratio_F()` using F scaling under the alternative.
-- Verify one-sided direction checks and two-sided tail calculations.
+### 11.1 Profiling Rules
 
-## Phase 5: Required Sample Size For Target Power
+- Use temporary local scripts or direct R commands; do not commit profiling
+  scratch files.
+- Prefer base R tools:
+  - `system.time()`
+  - `Rprof()`
+  - `summaryRprof()`
+- Do not add package dependencies such as `bench` or `microbenchmark`.
+- Profile `quiet = TRUE` calls unless printed output performance is the target.
 
-### 5.1 Generic Solver
+### 11.2 Representative Workloads
 
-- Audit `.nreq_find_min_n()` bracketing and binary search.
-- Confirm `n_required_from_power()` assumes nondecreasing power and returns the
-  smallest integer in range.
-- Check behavior when the target is not reachable within `n_max`.
-- Check cached evaluations do not affect correctness.
+Profile:
 
-### 5.2 Mean Required-n Functions
+- required-n searches with harder targets and larger `n_max`;
+- two-sample required-n functions with non-1 allocation ratios;
+- `power_*()` functions called repeatedly through required-n wrappers;
+- `chisq_gof_dist()` raw continuous data with omitted `breaks`;
+- `chisq_gof_dist()` sparse class combining;
+- high-volume classed result construction for common functions.
 
-- Check `n_required_z_mu()` closed-form one-sided shortcuts and post-checks.
-- Check two-sided z design search.
-- Check `n_required_t_mu()` one-sample, paired, Welch, and pooled branches.
-- Verify `n_ratio = n2 / n1` is applied consistently.
+### 11.3 Profiling Deliverable
 
-### 5.3 Proportion Required-n Functions
+Create `docs/MATH_EFFICIENCY_PHASE11_PROFILING_FINDINGS.md` with:
 
-- Check one-sample and two-sample searches compose correctly with
-  `power_p_z()`.
-- Preserve pooled/unpooled defaults from `DEFAULT_POLICIES.md`.
-- Check continuity correction behavior in required-n planning.
-- Verify approximation adequacy warnings at the returned sample size.
+- workloads used;
+- before-change timings;
+- observed hotspots;
+- candidates approved for implementation;
+- candidates rejected because risk exceeds likely benefit.
 
-### 5.4 Variance Required-n Functions
+No production edits should occur in Phase 11 unless profiling exposes a clear
+bug or severe performance issue.
 
-- Check `n_required_var_chisq()` for one-sample variance planning.
-- Check `n_required_var_ratio_F()` for two-sample variance-ratio planning.
-- Verify one-sided alternatives enforce mathematically compatible directions.
-- Confirm returned `n`, `n1`, and `n2` are minimal within the search contract.
+## Phase 12: Targeted Efficiency And Simplification Changes
 
-## Phase 6: Chi-square And Categorical Procedures
+### 12.1 Decision Rules
 
-### 6.1 Goodness-of-fit To Probabilities
+Implement a production change only if it satisfies at least one condition:
 
-- Check `chisq_gof_probs()` expected counts, contributions, residuals, degrees
-  of freedom, p-values, and critical values.
-- Verify equal-probability default when `p = NULL`.
-- Check category label handling.
+- reduces production line count while preserving behavior;
+- removes meaningful duplication across multiple branches;
+- avoids repeated expensive computation shown by profiling;
+- improves memory behavior for representative workloads;
+- improves numerical stability without changing public contracts.
 
-### 6.2 Goodness-of-fit To Distributions
+Reject changes that:
 
-- Check raw and grouped input branches for `pois`, `norm`, `exp`, and `unif`.
-- Check parameter estimation and degrees-of-freedom adjustment.
-- Check raw-data bin creation when `breaks` is omitted.
-- Check sparse-class combining for continuous distributions.
-- Check Poisson right-tail combining.
-- Confirm expected counts remain positive and warnings are appropriate.
+- only reformat code;
+- increase code length without measured benefit;
+- alter printed-output templates;
+- alter public result fields or class names;
+- change required-n minimality, `n_evaluations`, or allocation semantics;
+- introduce broad helper abstraction without net simplification.
 
-### 6.3 Contingency Tables
+### 12.2 Candidate Areas
 
-- Check `chisq_table()` expected counts, contributions, residuals, standardized
-  residuals, degrees of freedom, p-values, and critical values.
-- Check Yates correction only for 2 by 2 tables.
-- Confirm independence and homogeneity differ only in interpretation, not the
-  statistic.
+Investigate, in order:
 
-### 6.4 Table Proportions
+1. Required-n solver and wrappers:
+   - avoid repeated achieved-power calls only if `n_evaluations` semantics are
+     preserved or intentionally documented;
+   - preserve minimality guarantees.
+2. Power and hypothesis tails:
+   - consolidate repeated tail or critical-value logic only if production code
+     gets shorter or clearer without output drift.
+3. Chi-square distribution GOF:
+   - review binning and sparse-combining loops for avoidable recomputation;
+   - preserve labels, degrees of freedom, expected counts, warnings, and
+     result fields.
+4. Printing paths:
+   - leave unchanged unless an exact local simplification removes duplication
+     without changing text.
 
-- Check `table_props()` row, column, and overall margins.
-- Verify row and column totals are preserved in returned objects.
+### 12.3 Testing During Implementation
 
-## Phase 7: Shape Helpers
+After each production change, run the narrowest affected test slice first:
 
-### 7.1 Skewness
+- `devtools::test("StatsPackage -1.0", filter = "n-required")`
+- `devtools::test("StatsPackage -1.0", filter = "power")`
+- `devtools::test("StatsPackage -1.0", filter = "hypothesis")`
+- `devtools::test("StatsPackage -1.0", filter = "chisq")`
 
-- Check `skew()` moment estimator.
-- Check adjusted estimator and minimum sample size.
-- Check missing-value handling through `na_rm`.
-- Check identical-observation error behavior.
+Then run:
 
-### 7.2 Kurtosis
+- `devtools::test("StatsPackage -1.0")`
+- `Rscript scripts/qa_cheatsheet_audit.R`
 
-- Check Pearson and excess kurtosis paths.
-- Check moment and adjusted estimators.
-- Check minimum sample size for adjusted kurtosis.
-- Check interpretation labels around normal-reference values.
+If a change claims performance improvement, record before/after timing in the
+findings document.
 
-## Phase 8: Code Efficiency And Simplification
+### 12.4 Commit Rules
 
-### 8.1 Duplication Review
+- Commit production/test changes before findings docs.
+- Keep unrelated docs and generated files untouched.
+- If no safe simplification is found, make no production-code changes and
+  record the reason.
 
-- Identify repeated validation, tail-selection, and result-construction logic.
-- Simplify only when the resulting code is shorter or meaningfully clearer.
-- Avoid new abstractions unless they remove real complexity.
+## Phase 13: Efficiency Audit Closeout
 
-### 8.2 Search And Solver Efficiency
+### 13.1 Final Findings
 
-- Review required-n searches for unnecessary repeated power calculations.
-- Confirm any caching or closed-form shortcuts preserve exact returned results.
-- Avoid performance changes that weaken minimality guarantees.
+Create `docs/MATH_EFFICIENCY_PHASE13_CODE_EFFICIENCY_FINAL_REPORT.md` with:
 
-### 8.3 Numerical Stability
+- files reviewed;
+- changes made;
+- candidates rejected;
+- before/after timing evidence;
+- line-count or complexity impact where relevant;
+- QA results;
+- remaining risks.
 
-- Look for avoidable cancellation, zero-division risks, and tail-probability
-  precision issues.
-- Prefer base R distribution functions with explicit tail arguments where that
-  improves clarity or stability.
+### 13.2 Final QA
 
-## Phase 9: Regression, Documentation Alignment, And Closure
+Run:
 
-### 9.1 Regression Testing
+- `devtools::test("StatsPackage -1.0")`
+- `Rscript scripts/qa_cheatsheet_audit.R`
 
-- Add or update tests only for audited behavior, mathematical fixes, or
-  important default-policy guarantees.
-- Include tests for bug fixes before or alongside implementation changes.
-- Keep tests focused but broad enough to cover public behavior touched by the
-  audit.
+Open a PR and require clean GitHub Actions before merging. Clean CI should
+include `devtools::check()` on the existing matrix.
 
-### 9.2 Cheat-sheet And Output Checks
+### 13.3 Acceptance Criteria
 
-- Run `Rscript 2.CheatsheetV8.r` after changes that affect printed output or
-  example behavior.
-- Run `Rscript scripts/qa_cheatsheet_audit.R` for release-level confidence.
-- Inspect output changes intentionally; do not accept drift silently.
+The efficiency follow-up is complete when:
 
-### 9.3 Documentation Alignment
+- public API behavior is unchanged;
+- final full tests pass;
+- cheat-sheet audit reports `Issues found: 0`;
+- GitHub Actions `CI`, `Coverage`, and `Lint` pass;
+- all accepted performance claims have recorded evidence;
+- all rejected candidates are documented clearly.
 
-- Check `README.md` for install instructions, version references, API
-  examples, and default-behavior statements.
-- Check `StatsPackage -1.0/vignettes/getting-started.Rmd` for user-facing
-  examples and explanations.
-- Check generated `.Rd` files under `StatsPackage -1.0/man/` when exported
-  behavior, arguments, return fields, or examples change.
-- Confirm `docs/API_INDEX.md`, `docs/DEFAULT_POLICIES.md`, `NEWS.md`, the
-  cheat sheet, README, vignette, and generated `.Rd` docs all describe the
-  same public behavior.
+## Updated Recommended Sequence
 
-### 9.4 Package Checks
+The completed mathematical audit is closed. The next deliberate code
+efficiency audit should proceed as:
 
-- Run `devtools::test("StatsPackage -1.0")`.
-- Run `devtools::check("StatsPackage -1.0")` for broad or release-facing
-  changes.
-- Run lint only after code edits that may affect style or readability.
-
-### 9.5 Audit Closeout
-
-- Summarize mathematical issues found and how they were resolved.
-- Summarize efficiency changes separately from correctness fixes.
-- List any intentionally deferred risks.
-- Confirm whether public API behavior changed and why.
-- Confirm whether default policies remained intact.
-
-## Recommended Audit Sequence
-
-1. API and default-policy lock.
-2. Confidence, prediction, and width families.
-3. Hypothesis tests.
-4. Power functions.
-5. Required sample-size solvers.
-6. Chi-square and categorical procedures.
-7. Shape helpers.
-8. Efficiency and simplification pass.
-9. Regression and closeout.
+1. Phase 10: efficiency baseline and static inventory.
+2. Phase 11: runtime profiling and hotspot triage.
+3. Phase 12: targeted efficiency and simplification changes.
+4. Phase 13: efficiency audit closeout and clean CI confirmation.
