@@ -18,6 +18,34 @@ test_that("ci_mu allows n = 1 when sigma is known", {
   expect_no_error(ci_mu(xbar = 5, n = 1, sigma = 2, quiet = TRUE))
 })
 
+test_that("ci_mu one-sample and paired t intervals match hand formulas", {
+  out_one <- ci_mu(xbar = 8.4, n = 10, s = 2.5, quiet = TRUE)
+  se_one <- 2.5 / sqrt(10)
+  crit_one <- stats::qt(0.975, df = 9)
+  target_one <- c(
+    lower = 8.4 - crit_one * se_one,
+    upper = 8.4 + crit_one * se_one
+  )
+
+  expect_equal(out_one$se, se_one, tolerance = 1e-12)
+  expect_equal(out_one$crit, crit_one, tolerance = 1e-12)
+  expect_equal(out_one$margin, crit_one * se_one, tolerance = 1e-12)
+  expect_equal(out_one$ci, target_one, tolerance = 1e-12)
+  expect_equal(out_one$df, 9)
+
+  out_paired <- ci_mu(xbar = -1.4, n = 18, s = 2.2, paired = TRUE,
+                      side = "upper", quiet = TRUE)
+  se_paired <- 2.2 / sqrt(18)
+  crit_paired <- stats::qt(0.95, df = 17)
+  target_paired <- c(lower = -Inf, upper = -1.4 + crit_paired * se_paired)
+
+  expect_equal(out_paired$se, se_paired, tolerance = 1e-12)
+  expect_equal(out_paired$crit, crit_paired, tolerance = 1e-12)
+  expect_equal(out_paired$margin, crit_paired * se_paired, tolerance = 1e-12)
+  expect_equal(out_paired$ci, target_paired, tolerance = 1e-12)
+  expect_equal(out_paired$df, 17)
+})
+
 test_that("ci_mu rejects non-integer sample sizes", {
   expect_error(
     ci_mu(xbar = 2.25, n = 36.5, sigma = 1.5, quiet = TRUE),
@@ -33,6 +61,26 @@ test_that("ci_mu lower and upper one-sided intervals use infinite bounds correct
   expect_true(is.infinite(out_upper$ci["lower"]))
   expect_true(out_lower$ci["upper"] > 0)
   expect_true(out_upper$ci["lower"] < 0)
+})
+
+test_that("ci_mu one-sided intervals use alpha-tail finite bounds", {
+  out_z <- ci_mu(xbar = 10, n = 25, sigma = 4, side = "lower", quiet = TRUE)
+  se_z <- 4 / sqrt(25)
+  crit_z <- stats::qnorm(0.95)
+
+  expect_equal(out_z$se, se_z, tolerance = 1e-12)
+  expect_equal(out_z$crit, crit_z, tolerance = 1e-12)
+  expect_equal(out_z$margin, crit_z * se_z, tolerance = 1e-12)
+  expect_equal(out_z$ci, c(lower = 10 - crit_z * se_z, upper = Inf), tolerance = 1e-12)
+
+  out_t <- ci_mu(xbar = 8.4, n = 10, s = 2.5, side = "upper", quiet = TRUE)
+  se_t <- 2.5 / sqrt(10)
+  crit_t <- stats::qt(0.95, df = 9)
+
+  expect_equal(out_t$se, se_t, tolerance = 1e-12)
+  expect_equal(out_t$crit, crit_t, tolerance = 1e-12)
+  expect_equal(out_t$margin, crit_t * se_t, tolerance = 1e-12)
+  expect_equal(out_t$ci, c(lower = -Inf, upper = 8.4 + crit_t * se_t), tolerance = 1e-12)
 })
 
 test_that("ci_mu warns when z is used with unknown sigma and small n", {
@@ -63,12 +111,92 @@ test_that("ci_mu digits affect display only", {
   expect_false(identical(txt2, txt6))
 })
 
+test_that("ci_mu two-sample z, Welch, and pooled intervals match hand formulas", {
+  out_z <- ci_mu(xbar = c(105, 100), n = c(64, 49), sigma = c(12, 15),
+                 method = "z", side = "lower", quiet = TRUE)
+  se_z <- sqrt(12^2 / 64 + 15^2 / 49)
+  crit_z <- stats::qnorm(0.95)
+
+  expect_equal(out_z$se, se_z, tolerance = 1e-12)
+  expect_equal(out_z$crit, crit_z, tolerance = 1e-12)
+  expect_equal(out_z$margin, crit_z * se_z, tolerance = 1e-12)
+  expect_equal(out_z$ci, c(lower = 5 - crit_z * se_z, upper = Inf), tolerance = 1e-12)
+  expect_true(is.na(out_z$df))
+
+  out_welch <- ci_mu(xbar = c(82, 77), n = c(64, 49), s = c(12, 10),
+                     method = "welch", quiet = TRUE)
+  se_welch <- sqrt(12^2 / 64 + 10^2 / 49)
+  df_welch <- (12^2 / 64 + 10^2 / 49)^2 /
+    ((12^2 / 64)^2 / 63 + (10^2 / 49)^2 / 48)
+  crit_welch <- stats::qt(0.975, df = df_welch)
+  target_welch <- c(
+    lower = 5 - crit_welch * se_welch,
+    upper = 5 + crit_welch * se_welch
+  )
+
+  expect_equal(out_welch$se, se_welch, tolerance = 1e-12)
+  expect_equal(out_welch$df, df_welch, tolerance = 1e-12)
+  expect_equal(out_welch$crit, crit_welch, tolerance = 1e-12)
+  expect_equal(out_welch$ci, target_welch, tolerance = 1e-12)
+
+  out_pooled <- ci_mu(xbar = c(82, 77), n = c(64, 49), s = c(12, 10),
+                      method = "pooled", quiet = TRUE)
+  df_pooled <- 64 + 49 - 2
+  sp2 <- ((64 - 1) * 12^2 + (49 - 1) * 10^2) / df_pooled
+  se_pooled <- sqrt(sp2 * (1 / 64 + 1 / 49))
+  crit_pooled <- stats::qt(0.975, df = df_pooled)
+  target_pooled <- c(
+    lower = 5 - crit_pooled * se_pooled,
+    upper = 5 + crit_pooled * se_pooled
+  )
+
+  expect_equal(out_pooled$se, se_pooled, tolerance = 1e-12)
+  expect_equal(out_pooled$df, df_pooled, tolerance = 1e-12)
+  expect_equal(out_pooled$crit, crit_pooled, tolerance = 1e-12)
+  expect_equal(out_pooled$ci, target_pooled, tolerance = 1e-12)
+})
+
 test_that("ci_p exact one-sample interval matches binom.test", {
   out <- ci_p(x = 52, n = 100, conf.level = 0.95, quiet = TRUE)
   bt <- stats::binom.test(52, 100, conf.level = 0.95)
 
   expect_equal(out$estimate, 0.52, tolerance = 1e-12)
   expect_equal(out$ci, setNames(unname(bt$conf.int), c("lower", "upper")), tolerance = 1e-12)
+})
+
+test_that("ci_p Wald intervals match hand formulas", {
+  out_one <- ci_p(x = 52, n = 101, exact_1s = FALSE, quiet = TRUE)
+  phat <- 52 / 101
+  se_one <- sqrt(phat * (1 - phat) / 101)
+  crit <- stats::qnorm(0.975)
+  target_one <- c(
+    lower = max(0, phat - crit * se_one),
+    upper = min(1, phat + crit * se_one)
+  )
+
+  expect_equal(out_one$estimate, phat, tolerance = 1e-12)
+  expect_equal(out_one$se, se_one, tolerance = 1e-12)
+  expect_equal(out_one$crit, crit, tolerance = 1e-12)
+  expect_equal(out_one$margin, crit * se_one, tolerance = 1e-12)
+  expect_equal(out_one$ci, target_one, tolerance = 1e-12)
+
+  out_two <- ci_p(x = c(24, 8), n = c(55, 52), quiet = TRUE)
+  p1 <- 24 / 55
+  p2 <- 8 / 52
+  diff_hat <- p1 - p2
+  se_two <- sqrt(p1 * (1 - p1) / 55 + p2 * (1 - p2) / 52)
+  target_two <- c(
+    lower = diff_hat - crit * se_two,
+    upper = diff_hat + crit * se_two
+  )
+
+  expect_equal(out_two$estimate, diff_hat, tolerance = 1e-12)
+  expect_equal(out_two$p1, p1, tolerance = 1e-12)
+  expect_equal(out_two$p2, p2, tolerance = 1e-12)
+  expect_equal(out_two$se, se_two, tolerance = 1e-12)
+  expect_equal(out_two$crit, crit, tolerance = 1e-12)
+  expect_equal(out_two$margin, crit * se_two, tolerance = 1e-12)
+  expect_equal(out_two$ci, target_two, tolerance = 1e-12)
 })
 
 test_that("ci_p rejects non-integer counts", {
@@ -116,6 +244,21 @@ test_that("ci_var one-sample interval matches the chi-square formula", {
   expect_equal(out$estimate, s2, tolerance = 1e-12)
   expect_equal(out$ci, target, tolerance = 1e-12)
   expect_equal(out$ci_sd, sqrt(target), tolerance = 1e-12)
+})
+
+test_that("ci_var two-sample ratio interval matches the F inversion formula", {
+  out <- ci_var(s = c(4.2, 3.1), n = c(12, 10), quiet = TRUE)
+
+  df1 <- 11
+  df2 <- 9
+  ratio_hat <- 4.2^2 / 3.1^2
+  q <- stats::qf(c(1 - 0.05 / 2, 0.05 / 2), df1 = df1, df2 = df2)
+  target <- setNames(ratio_hat / q, c("lower", "upper"))
+
+  expect_equal(out$estimate, ratio_hat, tolerance = 1e-12)
+  expect_equal(out$ci, target, tolerance = 1e-12)
+  expect_equal(out$df1, df1)
+  expect_equal(out$df2, df2)
 })
 
 test_that("ci_var allows zero sample SD in the one-sample case", {

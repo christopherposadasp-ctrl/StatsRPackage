@@ -42,6 +42,28 @@ test_that("pi_mu lower and upper one-sided intervals use infinite bounds", {
   expect_true(out_upper$pi["lower"] < 0)
 })
 
+test_that("pi_mu one-sided intervals use alpha-tail finite bounds", {
+  out_z <- pi_mu(xbar = 2.25, n = 1, sigma = 1.5, side = "upper", quiet = TRUE)
+  se_z <- 1.5 * sqrt(2)
+  crit_z <- stats::qnorm(0.95)
+
+  expect_equal(out_z$se_pred, se_z, tolerance = 1e-12)
+  expect_equal(out_z$crit, crit_z, tolerance = 1e-12)
+  expect_equal(out_z$margin, crit_z * se_z, tolerance = 1e-12)
+  expect_equal(out_z$pi, c(lower = -Inf, upper = 2.25 + crit_z * se_z), tolerance = 1e-12)
+  expect_true(is.na(out_z$df))
+
+  out_t <- pi_mu(xbar = -1.5, n = 2, s = 0.8, side = "lower", quiet = TRUE)
+  se_t <- 0.8 * sqrt(1 + 1 / 2)
+  crit_t <- stats::qt(0.95, df = 1)
+
+  expect_equal(out_t$se_pred, se_t, tolerance = 1e-12)
+  expect_equal(out_t$crit, crit_t, tolerance = 1e-12)
+  expect_equal(out_t$margin, crit_t * se_t, tolerance = 1e-12)
+  expect_equal(out_t$pi, c(lower = -1.5 - crit_t * se_t, upper = Inf), tolerance = 1e-12)
+  expect_equal(out_t$df, 1)
+})
+
 test_that("pi_mu digits affect display only", {
   out2 <- pi_mu(xbar = 2.23456, n = 11, sigma = 1.23456, digits = 2, quiet = TRUE)
   out6 <- pi_mu(xbar = 2.23456, n = 11, sigma = 1.23456, digits = 6, quiet = TRUE)

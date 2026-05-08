@@ -315,7 +315,7 @@ power_t_mu <- function(mu_a, mu0, sigma_true, n, alpha = 0.05,
       tcrit <- stats::qt(1 - alpha / 2, df = df)
       crit_out <- c(lower = -tcrit, upper = tcrit)
       power <- stats::pt(-tcrit, df = df, ncp = ncp) +
-        (1 - stats::pt(tcrit, df = df, ncp = ncp))
+        stats::pt(tcrit, df = df, ncp = ncp, lower.tail = FALSE)
     } else if (alternative == "less") {
       tcrit <- stats::qt(alpha, df = df)
       crit_out <- tcrit
@@ -323,7 +323,7 @@ power_t_mu <- function(mu_a, mu0, sigma_true, n, alpha = 0.05,
     } else {
       tcrit <- stats::qt(1 - alpha, df = df)
       crit_out <- tcrit
-      power <- 1 - stats::pt(tcrit, df = df, ncp = ncp)
+      power <- stats::pt(tcrit, df = df, ncp = ncp, lower.tail = FALSE)
     }
 
     power <- .power_clip_prob(power)
@@ -407,7 +407,7 @@ power_t_mu <- function(mu_a, mu0, sigma_true, n, alpha = 0.05,
       tcrit <- stats::qt(1 - alpha / 2, df = df)
       crit_out <- c(lower = -tcrit, upper = tcrit)
       power <- stats::pt(-tcrit, df = df, ncp = ncp) +
-        (1 - stats::pt(tcrit, df = df, ncp = ncp))
+        stats::pt(tcrit, df = df, ncp = ncp, lower.tail = FALSE)
     } else if (alternative == "less") {
       tcrit <- stats::qt(alpha, df = df)
       crit_out <- tcrit
@@ -415,7 +415,7 @@ power_t_mu <- function(mu_a, mu0, sigma_true, n, alpha = 0.05,
     } else {
       tcrit <- stats::qt(1 - alpha, df = df)
       crit_out <- tcrit
-      power <- 1 - stats::pt(tcrit, df = df, ncp = ncp)
+      power <- stats::pt(tcrit, df = df, ncp = ncp, lower.tail = FALSE)
     }
 
     power <- .power_clip_prob(power)
@@ -541,7 +541,7 @@ power_t_mu <- function(mu_a, mu0, sigma_true, n, alpha = 0.05,
     tcrit <- stats::qt(1 - alpha / 2, df = df)
     crit_out <- c(lower = -tcrit, upper = tcrit)
     power <- stats::pt(-tcrit, df = df, ncp = ncp) +
-      (1 - stats::pt(tcrit, df = df, ncp = ncp))
+      stats::pt(tcrit, df = df, ncp = ncp, lower.tail = FALSE)
   } else if (alternative == "less") {
     tcrit <- stats::qt(alpha, df = df)
     crit_out <- tcrit
@@ -549,7 +549,7 @@ power_t_mu <- function(mu_a, mu0, sigma_true, n, alpha = 0.05,
   } else {
     tcrit <- stats::qt(1 - alpha, df = df)
     crit_out <- tcrit
-    power <- 1 - stats::pt(tcrit, df = df, ncp = ncp)
+    power <- stats::pt(tcrit, df = df, ncp = ncp, lower.tail = FALSE)
   }
 
   power <- .power_clip_prob(power)
@@ -998,7 +998,7 @@ power_var_chisq <- function(sigma_a, sigma0, n, alpha = 0.05,
     chi_hi <- stats::qchisq(1 - alpha / 2, df = df)
     crit_out <- c(lower = chi_lo, upper = chi_hi)
     power <- stats::pchisq(chi_lo / k, df = df) +
-      (1 - stats::pchisq(chi_hi / k, df = df))
+      stats::pchisq(chi_hi / k, df = df, lower.tail = FALSE)
   } else if (alternative == "less") {
     chi_crit <- stats::qchisq(alpha, df = df)
     crit_out <- chi_crit
@@ -1006,7 +1006,7 @@ power_var_chisq <- function(sigma_a, sigma0, n, alpha = 0.05,
   } else {
     chi_crit <- stats::qchisq(1 - alpha, df = df)
     crit_out <- chi_crit
-    power <- 1 - stats::pchisq(chi_crit / k, df = df)
+    power <- stats::pchisq(chi_crit / k, df = df, lower.tail = FALSE)
   }
 
   power <- .power_clip_prob(power)
@@ -1107,7 +1107,7 @@ power_var_ratio_F <- function(sigma_a, ratio0 = 1, n, alpha = 0.05,
     fhi <- stats::qf(1 - alpha / 2, df1 = df1, df2 = df2)
     crit_out <- c(lower = flo, upper = fhi)
     power <- stats::pf(flo / k, df1 = df1, df2 = df2) +
-      (1 - stats::pf(fhi / k, df1 = df1, df2 = df2))
+      stats::pf(fhi / k, df1 = df1, df2 = df2, lower.tail = FALSE)
   } else if (alternative == "less") {
     fcrit <- stats::qf(alpha, df1 = df1, df2 = df2)
     crit_out <- fcrit
@@ -1115,7 +1115,7 @@ power_var_ratio_F <- function(sigma_a, ratio0 = 1, n, alpha = 0.05,
   } else {
     fcrit <- stats::qf(1 - alpha, df1 = df1, df2 = df2)
     crit_out <- fcrit
-    power <- 1 - stats::pf(fcrit / k, df1 = df1, df2 = df2)
+    power <- stats::pf(fcrit / k, df1 = df1, df2 = df2, lower.tail = FALSE)
   }
 
   power <- .power_clip_prob(power)

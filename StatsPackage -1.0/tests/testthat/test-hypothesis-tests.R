@@ -54,6 +54,62 @@ test_that("z_test_mu two-sample statistics match the hand formula", {
   expect_equal(out$p_value, p_val, tolerance = 1e-12)
 })
 
+test_that("z_test_mu stores critical and estimate-critical boundaries", {
+  out_less <- z_test_mu(
+    xbar = 2.25,
+    mu0 = 3,
+    sigma = 1.5,
+    n = 36,
+    alpha = 0.05,
+    alternative = "less",
+    quiet = TRUE
+  )
+
+  se_less <- 1.5 / sqrt(36)
+  crit_less <- stats::qnorm(0.05)
+
+  expect_equal(out_less$crit, crit_less, tolerance = 1e-12)
+  expect_equal(out_less$estimate_crit, 3 + crit_less * se_less, tolerance = 1e-12)
+  expect_match(out_less$reject_region, "Z <")
+  expect_match(out_less$reject_region, "xbar <")
+
+  out_two <- z_test_mu(
+    xbar = c(10, 8),
+    mu0 = 0,
+    sigma = c(2, 3),
+    n = c(25, 36),
+    alpha = 0.05,
+    alternative = "two.sided",
+    quiet = TRUE
+  )
+
+  se_two <- sqrt(2^2 / 25 + 3^2 / 36)
+  crit_two <- stats::qnorm(0.975)
+  target_est_crit <- c(lower = -crit_two * se_two, upper = crit_two * se_two)
+
+  expect_equal(out_two$crit, c(lower = -crit_two, upper = crit_two), tolerance = 1e-12)
+  expect_equal(out_two$estimate_crit, target_est_crit, tolerance = 1e-12)
+  expect_match(out_two$reject_region, "\\|Z\\| >")
+  expect_match(out_two$reject_region, "xbar1 - xbar2 <")
+})
+
+test_that("z_test_mu keeps extreme greater-tail p-values nonzero", {
+  out <- z_test_mu(
+    xbar = 9,
+    mu0 = 0,
+    sigma = 1,
+    n = 1,
+    alpha = 0.05,
+    alternative = "greater",
+    quiet = TRUE
+  )
+
+  target <- stats::pnorm(out$z_stat, lower.tail = FALSE)
+
+  expect_equal(out$p_value, target, tolerance = 0)
+  expect_gt(out$p_value, 0)
+})
+
 test_that("z_test_mu rejects invalid sigma alias usage and non-integer n", {
   expect_error(
     z_test_mu(xbar = 2.25, mu0 = 3, sigma = 1.5, s = 1.5, n = 36, quiet = TRUE),
@@ -127,6 +183,48 @@ test_that("t_test_mu Welch two-sample statistics match the hand formula", {
   expect_equal(out$p_value, p_val, tolerance = 1e-12)
 })
 
+test_that("t_test_mu stores critical and estimate-critical boundaries", {
+  out_one <- t_test_mu(
+    xbar = 90,
+    mu0 = 0,
+    s = 100,
+    n = 16,
+    alpha = 0.02,
+    alternative = "two.sided",
+    quiet = TRUE
+  )
+
+  se_one <- 100 / sqrt(16)
+  crit_one <- stats::qt(0.99, df = 15)
+  target_est_crit <- c(lower = -crit_one * se_one, upper = crit_one * se_one)
+
+  expect_equal(out_one$crit, c(lower = -crit_one, upper = crit_one), tolerance = 1e-12)
+  expect_equal(out_one$estimate_crit, target_est_crit, tolerance = 1e-12)
+  expect_match(out_one$reject_region, "\\|T\\| >")
+
+  out_paired <- suppressWarnings(
+    t_test_mu(
+      xbar = 1.5,
+      mu0 = 0,
+      s = 2,
+      n = 10,
+      alpha = 0.05,
+      alternative = "greater",
+      paired = TRUE,
+      var.equal = TRUE,
+      quiet = TRUE
+    )
+  )
+
+  se_paired <- 2 / sqrt(10)
+  crit_paired <- stats::qt(0.95, df = 9)
+
+  expect_equal(out_paired$crit, crit_paired, tolerance = 1e-12)
+  expect_equal(out_paired$estimate_crit, crit_paired * se_paired, tolerance = 1e-12)
+  expect_match(out_paired$reject_region, "T >")
+  expect_match(out_paired$reject_region, "dbar >")
+})
+
 test_that("t_test_mu pooled two-sample statistics match the hand formula", {
   out <- t_test_mu(
     xbar = c(10, 8),
@@ -143,7 +241,7 @@ test_that("t_test_mu pooled two-sample statistics match the hand formula", {
   sp2 <- ((25 - 1) * 2^2 + (36 - 1) * 3^2) / df
   se <- sqrt(sp2 * (1 / 25 + 1 / 36))
   t_stat <- (10 - 8 - 0) / se
-  p_val <- 1 - stats::pt(t_stat, df = df)
+  p_val <- stats::pt(t_stat, df = df, lower.tail = FALSE)
 
   expect_equal(out$sp2, sp2, tolerance = 1e-12)
   expect_equal(out$se, se, tolerance = 1e-12)
@@ -169,7 +267,7 @@ test_that("t_test_mu paired branch matches the hand formula and warns when var.e
 
   se <- 2 / sqrt(10)
   t_stat <- 1.5 / se
-  p_val <- 1 - stats::pt(t_stat, df = 9)
+  p_val <- stats::pt(t_stat, df = 9, lower.tail = FALSE)
 
   expect_equal(out$se, se, tolerance = 1e-12)
   expect_equal(out$t_stat, t_stat, tolerance = 1e-12)
@@ -214,6 +312,25 @@ test_that("p_test one-sample exact p-value matches binom.test", {
   expect_equal(out$conf_int, setNames(unname(bt$conf.int), c("lower", "upper")), tolerance = 1e-12)
 })
 
+test_that("p_test one-sample exact p-value matches binom.test for all alternatives", {
+  for (alt in c("two.sided", "less", "greater")) {
+    out <- p_test(
+      x = 30,
+      n = 100,
+      p0 = 0.40,
+      alpha = 0.05,
+      alternative = alt,
+      quiet = TRUE
+    )
+
+    bt <- stats::binom.test(30, 100, p = 0.40, alternative = alt, conf.level = 0.95)
+
+    expect_equal(out$p_value, bt$p.value, tolerance = 1e-12)
+    expect_equal(out$conf_int, setNames(unname(bt$conf.int), c("lower", "upper")), tolerance = 1e-12)
+    expect_equal(out$statistic, 30)
+  }
+})
+
 test_that("p_test two-sample pooled z test with p0 = 0 matches the hand formula", {
   out <- p_test(
     x = c(24, 8),
@@ -229,7 +346,7 @@ test_that("p_test two-sample pooled z test with p0 = 0 matches the hand formula"
   p_pool <- (24 + 8) / (55 + 52)
   se0 <- sqrt(p_pool * (1 - p_pool) * (1 / 55 + 1 / 52))
   z_stat <- (phat1 - phat2 - 0) / se0
-  p_val <- 1 - stats::pnorm(z_stat)
+  p_val <- stats::pnorm(z_stat, lower.tail = FALSE)
 
   expect_true(out$pooled)
   expect_equal(out$p_pool, p_pool, tolerance = 1e-12)
@@ -262,6 +379,7 @@ test_that("p_test two-sample nonzero-null default is unpooled and uncorrected", 
   expect_equal(out$z_stat, z_stat, tolerance = 1e-12)
   expect_equal(out$p_value, p_val, tolerance = 1e-12)
 })
+
 test_that("p_test applies continuity correction when explicitly requested", {
   out <- p_test(
     x = c(24, 8),
@@ -290,6 +408,56 @@ test_that("p_test applies continuity correction when explicitly requested", {
   expect_equal(out$z_stat, z_stat, tolerance = 1e-12)
   expect_equal(out$p_value, p_val, tolerance = 1e-12)
 })
+
+test_that("p_test continuity correction handles less and greater alternatives", {
+  phat1 <- 24 / 55
+  phat2 <- 8 / 52
+  diff_hat <- phat1 - phat2
+  delta0 <- 0.1
+  se0 <- sqrt(phat1 * (1 - phat1) / 55 + phat2 * (1 - phat2) / 52)
+  cc <- 0.5 * (1 / 55 + 1 / 52)
+
+  out_less <- p_test(
+    x = c(24, 8),
+    n = c(55, 52),
+    p0 = delta0,
+    alpha = 0.05,
+    alternative = "less",
+    pooled = FALSE,
+    continuity = TRUE,
+    quiet = TRUE
+  )
+
+  crit_less <- stats::qnorm(0.05)
+  z_less <- (diff_hat - delta0 + cc) / se0
+
+  expect_equal(out_less$cc, cc, tolerance = 1e-12)
+  expect_equal(out_less$z_stat, z_less, tolerance = 1e-12)
+  expect_equal(out_less$p_value, stats::pnorm(z_less), tolerance = 1e-12)
+  expect_equal(out_less$crit, crit_less, tolerance = 1e-12)
+  expect_equal(out_less$estimate_crit, delta0 + crit_less * se0 - cc, tolerance = 1e-12)
+
+  out_greater <- p_test(
+    x = c(24, 8),
+    n = c(55, 52),
+    p0 = delta0,
+    alpha = 0.05,
+    alternative = "greater",
+    pooled = FALSE,
+    continuity = TRUE,
+    quiet = TRUE
+  )
+
+  crit_greater <- stats::qnorm(0.95)
+  z_greater <- (diff_hat - delta0 - cc) / se0
+
+  expect_equal(out_greater$cc, cc, tolerance = 1e-12)
+  expect_equal(out_greater$z_stat, z_greater, tolerance = 1e-12)
+  expect_equal(out_greater$p_value, stats::pnorm(z_greater, lower.tail = FALSE), tolerance = 1e-12)
+  expect_equal(out_greater$crit, crit_greater, tolerance = 1e-12)
+  expect_equal(out_greater$estimate_crit, delta0 + crit_greater * se0 + cc, tolerance = 1e-12)
+})
+
 test_that("p_test enforces integer counts, forbids pooled nonzero-null tests, and warns on weak approximation", {
   expect_error(
     p_test(x = 10.5, n = 20, p0 = 0.4, quiet = TRUE),
@@ -360,6 +528,68 @@ test_that("var_test_chisq two-sample F statistics match the hand formula", {
   expect_equal(out$ratio_hat, ratio_hat, tolerance = 1e-12)
   expect_equal(out$f_stat, stat, tolerance = 1e-12)
   expect_equal(out$p_value, p_val, tolerance = 1e-12)
+})
+
+test_that("var_test_chisq stores tail-specific critical values", {
+  out_greater <- var_test_chisq(
+    s = 42.2,
+    n = 10,
+    sigma0 = 60,
+    alpha = 0.05,
+    alternative = "greater",
+    quiet = TRUE
+  )
+
+  df <- 9
+  stat <- df * 42.2^2 / 60^2
+
+  expect_equal(out_greater$chi_stat, stat, tolerance = 1e-12)
+  expect_equal(out_greater$p_value, stats::pchisq(stat, df = df, lower.tail = FALSE), tolerance = 1e-12)
+  expect_equal(out_greater$crit, stats::qchisq(0.95, df = df), tolerance = 1e-12)
+  expect_match(out_greater$reject_region, "Chi\\^2 >")
+
+  out_two <- var_test_chisq(
+    s = 42.2,
+    n = 10,
+    sigma0 = 60,
+    alpha = 0.05,
+    alternative = "two.sided",
+    quiet = TRUE
+  )
+
+  p_left <- stats::pchisq(stat, df = df)
+  p_right <- stats::pchisq(stat, df = df, lower.tail = FALSE)
+  target_crit <- c(
+    lower = stats::qchisq(0.025, df = df),
+    upper = stats::qchisq(0.975, df = df)
+  )
+
+  expect_equal(out_two$p_value, min(1, 2 * min(p_left, p_right)), tolerance = 1e-12)
+  expect_equal(out_two$crit, target_crit, tolerance = 1e-12)
+  expect_match(out_two$reject_region, "^Chi\\^2 <")
+  expect_match(out_two$reject_region, "or Chi\\^2 >")
+})
+
+test_that("var_test_chisq two-sample F test supports non-1 ratio0", {
+  out <- var_test_chisq(
+    s = c(42.2, 35.0),
+    n = c(10, 12),
+    ratio0 = 1.5,
+    alpha = 0.05,
+    alternative = "greater",
+    quiet = TRUE
+  )
+
+  ratio_hat <- 42.2^2 / 35^2
+  stat <- ratio_hat / 1.5
+  crit <- stats::qf(0.95, df1 = 9, df2 = 11)
+
+  expect_equal(out$ratio0, 1.5, tolerance = 1e-12)
+  expect_equal(out$ratio_hat, ratio_hat, tolerance = 1e-12)
+  expect_equal(out$f_stat, stat, tolerance = 1e-12)
+  expect_equal(out$p_value, stats::pf(stat, df1 = 9, df2 = 11, lower.tail = FALSE), tolerance = 1e-12)
+  expect_equal(out$crit, crit, tolerance = 1e-12)
+  expect_match(out$reject_region, "F >")
 })
 
 test_that("var_test_chisq allows one-sample s = 0, warns on ignored sigma0 in the two-sample branch, and errors on zero denominator SD", {

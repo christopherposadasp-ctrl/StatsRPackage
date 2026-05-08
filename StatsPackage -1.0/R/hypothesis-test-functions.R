@@ -144,7 +144,7 @@ z_test_mu <- function(xbar, mu0, sigma = NULL, n, alpha = 0.05,
     est_crit_out <- mu0 + zcrit * se
   } else {
     zcrit <- stats::qnorm(1 - alpha)
-    p_val <- 1 - stats::pnorm(z_stat)
+    p_val <- stats::pnorm(z_stat, lower.tail = FALSE)
     crit_out <- zcrit
     est_crit_out <- mu0 + zcrit * se
   }
@@ -395,7 +395,7 @@ t_test_mu <- function(xbar, mu0, s, n, alpha = 0.05,
     est_crit_out <- mu0 + tcrit * se
   } else {
     tcrit <- stats::qt(1 - alpha, df = df)
-    p_val <- 1 - stats::pt(t_stat, df = df)
+    p_val <- stats::pt(t_stat, df = df, lower.tail = FALSE)
     crit_out <- tcrit
     est_crit_out <- mu0 + tcrit * se
   }
