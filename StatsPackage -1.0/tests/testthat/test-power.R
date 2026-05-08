@@ -58,6 +58,29 @@ test_that("power_z_mu two-sample power matches the hand formula and recycles sca
   expect_equal(out$power, target, tolerance = 1e-12)
 })
 
+test_that("power_z_mu less-tail critical values and estimate boundary match the hand formula", {
+  out <- power_z_mu(
+    mu_a = 8.5,
+    mu0 = 10,
+    sigma = 3,
+    n = 25,
+    alpha = 0.01,
+    alternative = "less",
+    quiet = TRUE
+  )
+
+  se <- 3 / sqrt(25)
+  ncp <- (8.5 - 10) / se
+  zcrit <- stats::qnorm(0.01)
+  target <- stats::pnorm(zcrit, mean = ncp, sd = 1)
+
+  expect_equal(out$crit, zcrit, tolerance = 1e-12)
+  expect_equal(out$estimate_crit, 10 + zcrit * se, tolerance = 1e-12)
+  expect_match(out$reject_region, "^Z <")
+  expect_match(out$reject_region, "equiv: xbar <")
+  expect_equal(out$power, target, tolerance = 1e-12)
+})
+
 test_that("power_z_mu under the null equals alpha and n = 1 is allowed", {
   out <- power_z_mu(
     mu_a = 0,
@@ -194,6 +217,30 @@ test_that("power_t_mu Welch two-sample power matches the intended approximation"
   expect_equal(out$power, target, tolerance = 1e-12)
 })
 
+test_that("power_t_mu Welch less-tail branch matches the hand formula", {
+  out <- power_t_mu(
+    mu_a = c(7, 10),
+    mu0 = 0,
+    sigma_true = c(3, 5),
+    n = c(21, 27),
+    alpha = 0.04,
+    alternative = "less",
+    method = "welch",
+    quiet = TRUE
+  )
+
+  se <- sqrt(3^2 / 21 + 5^2 / 27)
+  df <- (3^2 / 21 + 5^2 / 27)^2 /
+    ((3^2 / 21)^2 / 20 + (5^2 / 27)^2 / 26)
+  ncp <- ((7 - 10) - 0) / se
+  tcrit <- stats::qt(0.04, df = df)
+  target <- stats::pt(tcrit, df = df, ncp = ncp)
+
+  expect_equal(out$df, df, tolerance = 1e-12)
+  expect_equal(out$crit, tcrit, tolerance = 1e-12)
+  expect_equal(out$power, target, tolerance = 1e-12)
+})
+
 test_that("power_t_mu under the null equals alpha and digits affect display only", {
   out_null <- power_t_mu(
     mu_a = 0,
@@ -250,6 +297,27 @@ test_that("power_p_z one-sample normal-approximation power matches the hand form
   expect_equal(out$power, target, tolerance = 1e-12)
 })
 
+test_that("power_p_z one-sample less-tail branch stores the hand formula boundary", {
+  out <- power_p_z(
+    p_a = 0.32,
+    p0 = 0.40,
+    n = 250,
+    alpha = 0.025,
+    alternative = "less",
+    quiet = TRUE
+  )
+
+  se0 <- sqrt(0.40 * 0.60 / 250)
+  sd_alt <- sqrt(0.32 * 0.68 / 250)
+  zcrit <- stats::qnorm(0.025)
+  phat_crit <- 0.40 + zcrit * se0
+  target <- stats::pnorm(phat_crit, mean = 0.32, sd = sd_alt)
+
+  expect_equal(out$crit, zcrit, tolerance = 1e-12)
+  expect_equal(out$estimate_crit, phat_crit, tolerance = 1e-12)
+  expect_equal(out$power, target, tolerance = 1e-12)
+})
+
 test_that("power_p_z one-sample under the null equals alpha when the approximation is regular", {
   out <- power_p_z(
     p_a = 0.30,
@@ -285,6 +353,28 @@ test_that("power_p_z two-sample pooled power matches the hand formula", {
   expect_equal(out$p_pool, p_pool, tolerance = 1e-12)
   expect_equal(out$se0, se0, tolerance = 1e-12)
   expect_equal(out$sd_alt, sd_alt, tolerance = 1e-12)
+  expect_equal(out$power, target, tolerance = 1e-12)
+})
+
+test_that("power_p_z defaults to unpooled two-sample power when p0 is nonzero", {
+  out <- power_p_z(
+    p_a = c(0.55, 0.42),
+    p0 = 0.08,
+    n = c(260, 240),
+    alpha = 0.05,
+    alternative = "greater",
+    quiet = TRUE
+  )
+
+  delta_a <- 0.55 - 0.42
+  se0 <- sqrt(0.55 * 0.45 / 260 + 0.42 * 0.58 / 240)
+  zcrit <- stats::qnorm(1 - 0.05)
+  dcrit <- 0.08 + zcrit * se0
+  target <- 1 - stats::pnorm(dcrit, mean = delta_a, sd = se0)
+
+  expect_false(out$pooled)
+  expect_equal(out$se0, se0, tolerance = 1e-12)
+  expect_equal(out$estimate_crit, dcrit, tolerance = 1e-12)
   expect_equal(out$power, target, tolerance = 1e-12)
 })
 
@@ -428,6 +518,27 @@ test_that("power_var_chisq rejects non-integer n", {
   )
 })
 
+test_that("power_var_chisq less-tail formula uses chi-square scaling under the alternative", {
+  out <- power_var_chisq(
+    sigma_a = 45,
+    sigma0 = 60,
+    n = 22,
+    alpha = 0.025,
+    alternative = "less",
+    quiet = TRUE
+  )
+
+  df <- 21
+  k <- 45^2 / 60^2
+  chi_crit <- stats::qchisq(0.025, df = df)
+  target <- stats::pchisq(chi_crit / k, df = df)
+
+  expect_equal(out$df, df, tolerance = 1e-12)
+  expect_equal(out$k, k, tolerance = 1e-12)
+  expect_equal(out$crit, chi_crit, tolerance = 1e-12)
+  expect_equal(out$power, target, tolerance = 1e-12)
+})
+
 test_that("power_var_ratio_F hand formula matches the implementation", {
   out <- power_var_ratio_F(
     sigma_a = c(23, 50),
@@ -450,6 +561,29 @@ test_that("power_var_ratio_F hand formula matches the implementation", {
   expect_s3_class(out, "power_result")
   expect_equal(out$ratio_a, ratio_a, tolerance = 1e-12)
   expect_equal(out$k, k, tolerance = 1e-12)
+  expect_equal(out$power, target, tolerance = 1e-12)
+})
+
+test_that("power_var_ratio_F greater-tail formula honors non-1 ratio0 scaling", {
+  out <- power_var_ratio_F(
+    sigma_a = c(7, 4),
+    ratio0 = 2,
+    n = c(20, 21),
+    alpha = 0.04,
+    alternative = "greater",
+    quiet = TRUE
+  )
+
+  df1 <- 19
+  df2 <- 20
+  ratio_a <- 7^2 / 4^2
+  k <- ratio_a / 2
+  fcrit <- stats::qf(1 - 0.04, df1 = df1, df2 = df2)
+  target <- 1 - stats::pf(fcrit / k, df1 = df1, df2 = df2)
+
+  expect_equal(out$ratio_a, ratio_a, tolerance = 1e-12)
+  expect_equal(out$k, k, tolerance = 1e-12)
+  expect_equal(out$crit, fcrit, tolerance = 1e-12)
   expect_equal(out$power, target, tolerance = 1e-12)
 })
 
