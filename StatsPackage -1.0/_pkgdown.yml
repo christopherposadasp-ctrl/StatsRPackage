@@ -23,6 +23,9 @@ reference:
       - ci_p
       - ci_var
       - ci_lambda_exp
+  - title: Prediction Intervals
+    contents:
+      - pi_mu
   - title: Hypothesis Tests
     contents:
       - z_test_mu

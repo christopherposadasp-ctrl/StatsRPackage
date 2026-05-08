@@ -13,6 +13,12 @@ For argument-level help in R, use `?function_name` after loading the package.
 | `ci_var()` | One-sample chi-square CI for variance/SD and two-sample F CI for variance ratio |
 | `ci_lambda_exp()` | CI for exponential rate parameter using chi-square methods |
 
+## Prediction Intervals
+
+| Function | Summary |
+| --- | --- |
+| `pi_mu()` | One-sample prediction interval for a future observation (z or t) |
+
 ## Width and Precision Planning
 
 | Function | Summary |

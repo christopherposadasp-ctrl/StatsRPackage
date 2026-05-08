@@ -38,6 +38,14 @@ ci_p(x = 56, n = 100, quiet = TRUE)
 ci_p(x = c(42, 30), n = c(100, 100), quiet = TRUE)
 ```
 
+## Prediction intervals
+
+Use `pi_mu()` to predict one future observation from the same population or process:
+
+```{r}
+pi_mu(xbar = 12.4, n = 15, s = 3.2, quiet = TRUE)
+```
+
 ## Hypothesis testing
 
 `p_test()` supports one-sample exact and two-sample z tests.

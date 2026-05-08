@@ -1,3 +1,12 @@
+# StatsPackage 1.1.0
+
+- Add `pi_mu()` for one-sample prediction intervals for a future observation
+  using summary statistics.
+- Support z-based prediction intervals when `sigma` is known and t-based
+  prediction intervals when only the sample SD `s` is available.
+- Keep prediction intervals separate from confidence intervals by returning
+  `prediction_result` objects with `pi` bounds.
+
 # StatsPackage 1.0.0
 
 - Declare the public API stable for the package's intended introductory

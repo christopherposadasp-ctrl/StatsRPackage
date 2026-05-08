@@ -45,6 +45,18 @@ Examples of intended form:
 - `Chi^2 < c1 or Chi^2 > c2`
 - `F < c1 or F > c2`
 
+## Prediction Interval Defaults
+
+Applies to:
+- `pi_mu()`
+
+Policy:
+- `pi_mu()` predicts one future observation from the same population/process
+- it does not estimate the confidence interval for `mu`
+- supplying `sigma` uses a z-based prediction interval
+- supplying `s` uses a t-based prediction interval with `df = n - 1`
+- two-sample, paired, pooled, Welch, and regression prediction intervals are out of scope for `pi_mu()`
+
 ## Consistency Conventions
 
 Across major families:
@@ -52,4 +64,3 @@ Across major families:
 - support `digits` for printed summaries
 - support `quiet` for print suppression
 - return invisible classed objects containing full computational details
-

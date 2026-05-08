@@ -1,6 +1,6 @@
 # StatsRPackage
 
-StatsRPackage is the repository for `StatsPackage`, an R package focused on introductory statistical inference and design.
+StatsRPackage is the repository for `StatsPackage`, an R package focused on introductory statistical inference, prediction intervals, and design.
 
 [![CI](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/ci.yml/badge.svg)](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/ci.yml)
 [![Release](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/release.yml/badge.svg)](https://github.com/christopherposadasp-ctrl/StatsRPackage/actions/workflows/release.yml)
@@ -14,7 +14,7 @@ The project priorities are:
 - reusable workflows beyond a single assignment
 - regression-tested behavior
 
-Current package version: `1.0.0` (stable public API)
+Current package version: `1.1.0` (stable public API plus prediction intervals)
 
 ## Repository Layout
 
@@ -34,13 +34,13 @@ devtools::install("StatsPackage -1.0")
 library(StatsPackage)
 ```
 
-Install from GitHub (canonical classroom deployment command, pinned to `1.0.0`):
+Install from GitHub (canonical classroom deployment command, pinned to `1.1.0`):
 
 ```r
 remotes::install_github(
   "christopherposadasp-ctrl/StatsRPackage",
   subdir = "StatsPackage -1.0",
-  ref = "1.0.0"
+  ref = "1.1.0"
 )
 library(StatsPackage)
 ```
