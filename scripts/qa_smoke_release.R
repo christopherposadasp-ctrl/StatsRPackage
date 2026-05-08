@@ -17,14 +17,22 @@ cat("Package directory:", pkg_dir, "\n")
 cat("Log path:", log_path, "\n")
 cat("Results path:", results_path, "\n\n")
 
-if (!requireNamespace("StatsPackage", quietly = TRUE)) {
-  if (!file.exists(pkg_dir)) {
-    stop("StatsPackage is not installed and local package directory was not found: ", pkg_dir)
-  }
+if (!file.exists(pkg_dir)) {
+  stop("Local package directory was not found: ", pkg_dir)
+}
+
+local_version <- package_version(read.dcf(file.path(pkg_dir, "DESCRIPTION"))[1, "Version"])
+installed_version <- if (requireNamespace("StatsPackage", quietly = TRUE)) {
+  utils::packageVersion("StatsPackage")
+} else {
+  NULL
+}
+
+if (is.null(installed_version) || installed_version < local_version) {
   if (!requireNamespace("devtools", quietly = TRUE)) {
-    stop("StatsPackage is not installed. Install it first or install devtools for local fallback install.")
+    stop("Install devtools to install the local StatsPackage version required for this smoke test.")
   }
-  cat("StatsPackage not found in library. Installing from local package directory...\n")
+  cat("Installing StatsPackage from local package directory...\n")
   devtools::install(pkg_dir, upgrade = FALSE, quiet = TRUE, dependencies = FALSE)
 }
 
@@ -99,6 +107,20 @@ run_check("ci_mu_structure", {
   assert_true(is.finite(out$se) && out$se >= 0, "ci_mu() se must be finite and nonnegative.")
   assert_true(is.numeric(out$ci[["lower"]]) && is.numeric(out$ci[["upper"]]), "ci_mu() bounds must be numeric.")
   assert_true(out$ci[["lower"]] <= out$ci[["upper"]], "ci_mu() lower bound must be <= upper bound.")
+})
+
+run_check("pi_mu_structure", {
+  out <- StatsPackage::pi_mu(xbar = 12.4, n = 15, s = 3.2, quiet = TRUE)
+  assert_true(
+    inherits(out, "prediction_result"),
+    "pi_mu() should return an object inheriting from prediction_result."
+  )
+  assert_has_fields(out, c("estimate", "pi", "se_pred", "conf.level"), "pi_mu() result")
+  assert_true(all(c("lower", "upper") %in% names(out$pi)), "pi_mu() result$pi must include lower and upper.")
+  assert_true(is.finite(out$estimate), "pi_mu() estimate must be finite.")
+  assert_true(is.finite(out$se_pred) && out$se_pred >= 0, "pi_mu() se_pred must be finite and nonnegative.")
+  assert_true(is.numeric(out$pi[["lower"]]) && is.numeric(out$pi[["upper"]]), "pi_mu() bounds must be numeric.")
+  assert_true(out$pi[["lower"]] <= out$pi[["upper"]], "pi_mu() lower bound must be <= upper bound.")
 })
 
 run_check("p_test_nonzero_null_defaults", {

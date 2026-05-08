@@ -2,7 +2,7 @@
 # you can delete or comment out this block.
 
 
-required_version <- "1.0.0"
+required_version <- "1.1.0"
 
 if (!requireNamespace("remotes", quietly = TRUE)) {
   install.packages("remotes")
@@ -182,6 +182,29 @@ ci_mu(xbar = 5.2, n = 25, s = 1.8, side = "lower")
 
 # One-sided upper CI
 ci_mu(xbar = 5.2, n = 25, s = 1.8, side = "upper")
+
+#############################################################
+## Prediction Interval for a Future Observation----
+# pi_mu(
+#   xbar,              # sample mean
+#   n,                 # sample size used to estimate the process
+#   s = NULL,          # sample SD when sigma is unknown -> t prediction interval
+#   sigma = NULL,      # known population SD -> z prediction interval
+#   conf.level = 0.95, # prediction confidence level
+#   side = c("two.sided", "lower", "upper"),
+#   digits = 4,
+#   quiet = FALSE
+# )
+#
+# Use this when predicting one future observation from the same process.
+# This is wider than a CI for mu because it includes future-observation noise.
+#############################################################
+
+# One-sample t prediction interval; sigma unknown
+pi_mu(xbar = 12.4, n = 15, s = 3.2)
+
+# One-sample z prediction interval; sigma known
+pi_mu(xbar = 2.25, n = 36, sigma = 1.5)
 
 #############################################################
 ## CI for Proportion -----

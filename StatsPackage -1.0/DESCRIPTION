@@ -1,10 +1,11 @@
 Package: StatsPackage
 Title: Statistical Functions for Introductory Inference and Design
-Version: 1.0.0
+Version: 1.1.0
 Authors@R: 
     person("Chris", "Posadas", email = "christopher.v.posadas@nps.edu", role = c("aut", "cre"))
 Description: A personal package of reusable statistical functions for confidence intervals,
-    hypothesis tests, power calculations, sample size determination, and descriptive shape measures.
+    prediction intervals, hypothesis tests, power calculations, sample size determination,
+    and descriptive shape measures.
 License: MIT + file LICENSE
 Encoding: UTF-8
 URL: https://christopherposadasp-ctrl.github.io/StatsRPackage/,
