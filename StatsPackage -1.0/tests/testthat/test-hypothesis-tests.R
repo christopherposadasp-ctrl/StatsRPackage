@@ -93,6 +93,23 @@ test_that("z_test_mu stores critical and estimate-critical boundaries", {
   expect_match(out_two$reject_region, "xbar1 - xbar2 <")
 })
 
+test_that("z_test_mu keeps extreme greater-tail p-values nonzero", {
+  out <- z_test_mu(
+    xbar = 9,
+    mu0 = 0,
+    sigma = 1,
+    n = 1,
+    alpha = 0.05,
+    alternative = "greater",
+    quiet = TRUE
+  )
+
+  target <- stats::pnorm(out$z_stat, lower.tail = FALSE)
+
+  expect_equal(out$p_value, target, tolerance = 0)
+  expect_gt(out$p_value, 0)
+})
+
 test_that("z_test_mu rejects invalid sigma alias usage and non-integer n", {
   expect_error(
     z_test_mu(xbar = 2.25, mu0 = 3, sigma = 1.5, s = 1.5, n = 36, quiet = TRUE),
@@ -224,7 +241,7 @@ test_that("t_test_mu pooled two-sample statistics match the hand formula", {
   sp2 <- ((25 - 1) * 2^2 + (36 - 1) * 3^2) / df
   se <- sqrt(sp2 * (1 / 25 + 1 / 36))
   t_stat <- (10 - 8 - 0) / se
-  p_val <- 1 - stats::pt(t_stat, df = df)
+  p_val <- stats::pt(t_stat, df = df, lower.tail = FALSE)
 
   expect_equal(out$sp2, sp2, tolerance = 1e-12)
   expect_equal(out$se, se, tolerance = 1e-12)
@@ -250,7 +267,7 @@ test_that("t_test_mu paired branch matches the hand formula and warns when var.e
 
   se <- 2 / sqrt(10)
   t_stat <- 1.5 / se
-  p_val <- 1 - stats::pt(t_stat, df = 9)
+  p_val <- stats::pt(t_stat, df = 9, lower.tail = FALSE)
 
   expect_equal(out$se, se, tolerance = 1e-12)
   expect_equal(out$t_stat, t_stat, tolerance = 1e-12)
@@ -329,7 +346,7 @@ test_that("p_test two-sample pooled z test with p0 = 0 matches the hand formula"
   p_pool <- (24 + 8) / (55 + 52)
   se0 <- sqrt(p_pool * (1 - p_pool) * (1 / 55 + 1 / 52))
   z_stat <- (phat1 - phat2 - 0) / se0
-  p_val <- 1 - stats::pnorm(z_stat)
+  p_val <- stats::pnorm(z_stat, lower.tail = FALSE)
 
   expect_true(out$pooled)
   expect_equal(out$p_pool, p_pool, tolerance = 1e-12)

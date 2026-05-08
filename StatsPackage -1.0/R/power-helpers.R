@@ -74,7 +74,7 @@
   if (sd == 0) {
     return(as.numeric(mean > cutoff))
   }
-  1 - stats::pnorm(cutoff, mean = mean, sd = sd)
+  stats::pnorm(cutoff, mean = mean, sd = sd, lower.tail = FALSE)
 }
 
 .power_prob_two_sided_normal <- function(lower, upper, mean, sd) {
@@ -85,7 +85,7 @@
     return(as.numeric(mean < lower || mean > upper))
   }
   stats::pnorm(lower, mean = mean, sd = sd) +
-    (1 - stats::pnorm(upper, mean = mean, sd = sd))
+    stats::pnorm(upper, mean = mean, sd = sd, lower.tail = FALSE)
 }
 
 .power_warn_prop_approx <- function(fun, scenario = c("one_sample", "two_sample")) {

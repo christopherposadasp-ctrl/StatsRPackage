@@ -27,7 +27,7 @@ test_that("power_z_mu one-sample power matches the hand formula", {
   se <- 1500 / sqrt(16)
   ncp <- (30500 - 30000) / se
   zcrit <- stats::qnorm(1 - 0.01)
-  target <- 1 - stats::pnorm(zcrit, mean = ncp, sd = 1)
+  target <- stats::pnorm(zcrit, mean = ncp, sd = 1, lower.tail = FALSE)
 
   expect_s3_class(out, "power_result")
   expect_equal(out$se, se, tolerance = 1e-12)
@@ -50,7 +50,7 @@ test_that("power_z_mu two-sample power matches the hand formula and recycles sca
   ncp <- ((65 - 63) - 0) / se
   zcrit <- stats::qnorm(1 - 0.05 / 2)
   target <- stats::pnorm(-zcrit, mean = ncp, sd = 1) +
-    (1 - stats::pnorm(zcrit, mean = ncp, sd = 1))
+    stats::pnorm(zcrit, mean = ncp, sd = 1, lower.tail = FALSE)
 
   expect_equal(out$n, c(40L, 40L))
   expect_equal(out$sigma, c(3, 3), tolerance = 1e-12)
@@ -95,6 +95,23 @@ test_that("power_z_mu under the null equals alpha and n = 1 is allowed", {
   expect_equal(out$power, 0.05, tolerance = 1e-12)
 })
 
+test_that("power_z_mu keeps extreme greater-tail power nonzero", {
+  out <- power_z_mu(
+    mu_a = -9,
+    mu0 = 0,
+    sigma = 1,
+    n = 1,
+    alpha = 0.05,
+    alternative = "greater",
+    quiet = TRUE
+  )
+
+  target <- stats::pnorm(out$crit, mean = out$ncp, sd = 1, lower.tail = FALSE)
+
+  expect_equal(out$power, target, tolerance = 0)
+  expect_gt(out$power, 0)
+})
+
 test_that("power_z_mu rejects non-integer n and digits affect display only", {
   expect_error(
     power_z_mu(mu_a = 0, mu0 = 0, sigma = 1, n = 1.5, quiet = TRUE),
@@ -131,7 +148,7 @@ test_that("power_t_mu one-sample power matches the hand formula", {
   ncp <- (2 - 3) / se
   tcrit <- stats::qt(1 - 0.05 / 2, df = df)
   target <- stats::pt(-tcrit, df = df, ncp = ncp) +
-    (1 - stats::pt(tcrit, df = df, ncp = ncp))
+    stats::pt(tcrit, df = df, ncp = ncp, lower.tail = FALSE)
 
   expect_s3_class(out, "power_result")
   expect_equal(out$df, df, tolerance = 1e-12)
@@ -160,7 +177,7 @@ test_that("power_t_mu paired power matches the hand formula and warns when metho
   se <- 2 / sqrt(10)
   ncp <- 1.5 / se
   tcrit <- stats::qt(1 - 0.05, df = df)
-  target <- 1 - stats::pt(tcrit, df = df, ncp = ncp)
+  target <- stats::pt(tcrit, df = df, ncp = ncp, lower.tail = FALSE)
 
   expect_equal(out$se, se, tolerance = 1e-12)
   expect_equal(out$ncp, ncp, tolerance = 1e-12)
@@ -184,7 +201,7 @@ test_that("power_t_mu pooled two-sample power matches the hand formula", {
   ncp <- (10 - 8) / se
   tcrit <- stats::qt(1 - 0.05 / 2, df = df)
   target <- stats::pt(-tcrit, df = df, ncp = ncp) +
-    (1 - stats::pt(tcrit, df = df, ncp = ncp))
+    stats::pt(tcrit, df = df, ncp = ncp, lower.tail = FALSE)
 
   expect_equal(out$df, df, tolerance = 1e-12)
   expect_equal(out$se, se, tolerance = 1e-12)
@@ -209,7 +226,7 @@ test_that("power_t_mu Welch two-sample power matches the intended approximation"
     ((3^2 / 40)^2 / 39 + (2.5^2 / 35)^2 / 34)
   ncp <- (10 - 8) / se
   tcrit <- stats::qt(1 - 0.05, df = df)
-  target <- 1 - stats::pt(tcrit, df = df, ncp = ncp)
+  target <- stats::pt(tcrit, df = df, ncp = ncp, lower.tail = FALSE)
 
   expect_equal(out$df, df, tolerance = 1e-12)
   expect_equal(out$se, se, tolerance = 1e-12)
@@ -289,7 +306,7 @@ test_that("power_p_z one-sample normal-approximation power matches the hand form
   sd_alt <- sqrt(0.25 * 0.75 / 541)
   zcrit <- stats::qnorm(1 - 0.05)
   phat_crit <- 0.20 + zcrit * se0
-  target <- 1 - stats::pnorm(phat_crit, mean = 0.25, sd = sd_alt)
+  target <- stats::pnorm(phat_crit, mean = 0.25, sd = sd_alt, lower.tail = FALSE)
 
   expect_s3_class(out, "power_result")
   expect_equal(out$se0, se0, tolerance = 1e-12)
@@ -347,7 +364,7 @@ test_that("power_p_z two-sample pooled power matches the hand formula", {
   sd_alt <- sqrt(0.30 * 0.70 / 100 + 0.20 * 0.80 / 120)
   zcrit <- stats::qnorm(1 - 0.05)
   dcrit <- 0 + zcrit * se0
-  target <- 1 - stats::pnorm(dcrit, mean = delta_a, sd = sd_alt)
+  target <- stats::pnorm(dcrit, mean = delta_a, sd = sd_alt, lower.tail = FALSE)
 
   expect_true(out$pooled)
   expect_equal(out$p_pool, p_pool, tolerance = 1e-12)
@@ -370,7 +387,7 @@ test_that("power_p_z defaults to unpooled two-sample power when p0 is nonzero", 
   se0 <- sqrt(0.55 * 0.45 / 260 + 0.42 * 0.58 / 240)
   zcrit <- stats::qnorm(1 - 0.05)
   dcrit <- 0.08 + zcrit * se0
-  target <- 1 - stats::pnorm(dcrit, mean = delta_a, sd = se0)
+  target <- stats::pnorm(dcrit, mean = delta_a, sd = se0, lower.tail = FALSE)
 
   expect_false(out$pooled)
   expect_equal(out$se0, se0, tolerance = 1e-12)
@@ -399,7 +416,7 @@ test_that("power_p_z two-sample unpooled two-sided branch uses the continuity-co
   d_lo <- 0.05 - band
   d_hi <- 0.05 + band
   target <- stats::pnorm(d_lo, mean = delta_a, sd = sd_alt) +
-    (1 - stats::pnorm(d_hi, mean = delta_a, sd = sd_alt))
+    stats::pnorm(d_hi, mean = delta_a, sd = sd_alt, lower.tail = FALSE)
 
   expect_false(out$pooled)
   expect_true(out$continuity_correction)
@@ -477,7 +494,7 @@ test_that("power_var_chisq hand formula matches the implementation", {
   df <- 24
   k <- (70^2) / (60^2)
   chi_crit <- stats::qchisq(1 - 0.05, df = df)
-  target <- 1 - stats::pchisq(chi_crit / k, df = df)
+  target <- stats::pchisq(chi_crit / k, df = df, lower.tail = FALSE)
 
   expect_s3_class(out, "power_result")
   expect_equal(out$df, df, tolerance = 1e-12)
@@ -556,7 +573,7 @@ test_that("power_var_ratio_F hand formula matches the implementation", {
   flo <- stats::qf(0.05 / 2, df1 = df1, df2 = df2)
   fhi <- stats::qf(1 - 0.05 / 2, df1 = df1, df2 = df2)
   target <- stats::pf(flo / k, df1 = df1, df2 = df2) +
-    (1 - stats::pf(fhi / k, df1 = df1, df2 = df2))
+    stats::pf(fhi / k, df1 = df1, df2 = df2, lower.tail = FALSE)
 
   expect_s3_class(out, "power_result")
   expect_equal(out$ratio_a, ratio_a, tolerance = 1e-12)
@@ -579,7 +596,7 @@ test_that("power_var_ratio_F greater-tail formula honors non-1 ratio0 scaling", 
   ratio_a <- 7^2 / 4^2
   k <- ratio_a / 2
   fcrit <- stats::qf(1 - 0.04, df1 = df1, df2 = df2)
-  target <- 1 - stats::pf(fcrit / k, df1 = df1, df2 = df2)
+  target <- stats::pf(fcrit / k, df1 = df1, df2 = df2, lower.tail = FALSE)
 
   expect_equal(out$ratio_a, ratio_a, tolerance = 1e-12)
   expect_equal(out$k, k, tolerance = 1e-12)
