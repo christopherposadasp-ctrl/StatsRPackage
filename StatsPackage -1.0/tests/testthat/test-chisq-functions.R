@@ -268,6 +268,27 @@ test_that("chisq_gof_dist raw Poisson estimated lambda adjusts df", {
   expect_true(all(as.numeric(out$expected) > 0))
 })
 
+test_that("chisq_gof_dist raw Poisson estimated lambda keeps positive df after sparse combining", {
+  set.seed(1101)
+  x <- rpois(50000, lambda = 12)
+
+  out <- chisq_gof_dist(
+    x = x,
+    dist = "pois",
+    estimate = TRUE,
+    quiet = TRUE
+  )
+
+  expect_equal(out$params$lambda, mean(x), tolerance = 1e-12)
+  expect_equal(out$params_estimated_n, 1L)
+  expect_gt(out$df, 0)
+  expect_true(any(grepl("\\+$", out$labels)))
+  expect_true(all(as.numeric(out$expected) > 0))
+  expect_equal(sum(as.numeric(out$observed)), length(x), tolerance = 1e-12)
+  expect_equal(sum(as.numeric(out$expected)), length(x), tolerance = 1e-8)
+  expect_equal(out$chi_stat, sum(out$contrib), tolerance = 1e-12)
+})
+
 test_that("chisq_table expected counts, statistic, and residuals match chisq.test", {
   observed <- matrix(
     c(25, 10,
