@@ -235,30 +235,15 @@
   max_val <- length(obs_vals) - 1L
   tail_start <- max_val + 1L
 
-  repeat {
-    if (tail_start > 0L) {
-      ind_vals <- 0:(tail_start - 1L)
-      exp_ind <- n * stats::dpois(ind_vals, lambda = lambda)
-    } else {
-      exp_ind <- numeric(0)
-    }
-
-    exp_tail <- n * (1 - stats::ppois(tail_start - 1L, lambda = lambda))
-
-    if (exp_tail >= min_expected && all(exp_ind >= min_expected)) break
-
+  exp_tail <- n * stats::ppois(tail_start - 1L, lambda = lambda, lower.tail = FALSE)
+  while (tail_start > 1L && exp_tail < min_expected) {
     tail_start <- tail_start - 1L
-    if (tail_start <= 0L) break
+    exp_tail <- n * stats::ppois(tail_start - 1L, lambda = lambda, lower.tail = FALSE)
   }
 
-  if (tail_start <= 0L) {
-    tail_start <- 1L
-    ind_vals <- 0:(tail_start - 1L)
-    exp_ind <- n * stats::dpois(ind_vals, lambda = lambda)
-    exp_tail <- n * (1 - stats::ppois(tail_start - 1L, lambda = lambda))
-  }
-
-  obs_ind <- if (tail_start > 0L) obs_vals[seq_len(tail_start)] else numeric(0)
+  ind_vals <- 0:(tail_start - 1L)
+  exp_ind <- n * stats::dpois(ind_vals, lambda = lambda)
+  obs_ind <- obs_vals[ind_vals + 1L]
 
   obs_tail <- if (tail_start <= max_val) {
     sum(obs_vals[(tail_start + 1L):(max_val + 1L)])
@@ -266,20 +251,22 @@
     0
   }
 
-  labels <- c(as.character(0:(tail_start - 1L)), paste0(tail_start, "+"))
-  group_map <- c(
-    as.list(as.character(0:(tail_start - 1L))),
-    list(paste0(tail_start, "+"))
+  labels0 <- c(as.character(ind_vals), paste0(tail_start, "+"))
+  cmb <- .combine_sparse_adjacent(
+    observed = c(obs_ind, obs_tail),
+    expected = c(exp_ind, exp_tail),
+    labels = labels0,
+    min_expected = min_expected
   )
 
   list(
-    observed = c(obs_ind, obs_tail),
-    expected = c(exp_ind, exp_tail),
-    labels = labels,
-    group_map = group_map,
+    observed = cmb$observed,
+    expected = cmb$expected,
+    labels = cmb$labels,
+    group_map = cmb$group_map,
     tail_start = tail_start,
-    combined = (tail_start <= max_val),
-    all_expected_ok = all(c(exp_ind, exp_tail) >= min_expected)
+    combined = (tail_start <= max_val || cmb$combined),
+    all_expected_ok = cmb$all_expected_ok
   )
 }
 
