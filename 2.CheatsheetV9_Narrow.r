@@ -10,7 +10,7 @@
 ################################
 
 # Setup/update block. Keep this if you are not sure the package is installed.
-required_version <- "1.1.0"
+required_version <- "1.1.1"
 
 if (!requireNamespace("remotes", quietly = TRUE)) {
   install.packages("remotes")
@@ -20,7 +20,7 @@ if (!requireNamespace("StatsPackage", quietly = TRUE) ||
     utils::packageVersion("StatsPackage") < package_version(required_version)) {
   remotes::install_github(
     "christopherposadasp-ctrl/StatsRPackage",
-    subdir = "StatsPackage -1.0",
+    subdir = "StatsPackage",
     ref = required_version,
     upgrade = "never"
   )

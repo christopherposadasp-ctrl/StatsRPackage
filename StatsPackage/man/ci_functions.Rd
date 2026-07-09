@@ -73,3 +73,9 @@ and optional printed summaries controlled by \code{digits} and \code{quiet}.
 \item \code{ci_lambda_exp()}: Confidence interval for an exponential rate parameter.
 
 }}
+\examples{
+ci_mu(xbar = 12.4, n = 15, s = 3.2, quiet = TRUE)
+ci_p(x = 56, n = 100, quiet = TRUE)
+ci_var(s = 4.2, n = 12, quiet = TRUE)
+ci_lambda_exp(Sum = 140, n = 50, quiet = TRUE)
+}

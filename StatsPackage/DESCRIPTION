@@ -1,6 +1,6 @@
 Package: StatsPackage
 Title: Statistical Functions for Introductory Inference and Design
-Version: 1.1.0
+Version: 1.1.1
 Authors@R: 
     person("Chris", "Posadas", email = "christopher.v.posadas@nps.edu", role = c("aut", "cre"))
 Description: A personal package of reusable statistical functions for confidence intervals,
@@ -12,10 +12,10 @@ URL: https://christopherposadasp-ctrl.github.io/StatsRPackage/,
     https://github.com/christopherposadasp-ctrl/StatsRPackage
 BugReports: https://github.com/christopherposadasp-ctrl/StatsRPackage/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Config/testthat/edition: 3
 Suggests: 
     testthat,
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0

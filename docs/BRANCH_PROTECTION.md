@@ -13,6 +13,13 @@ Set required status checks to:
 - `lintr`
 - `coverage`
 
+## Review policy
+
+For a solo-maintainer repository, required CI checks are the non-negotiable
+merge gate. Leave the required approval count at zero because GitHub does not
+allow an author to approve their own pull request. When a second maintainer or
+regular reviewer is available, raise the count to one.
+
 ## Apply via GitHub REST API
 
 Use a personal access token with repository admin permissions:
@@ -41,7 +48,7 @@ curl -L \
     "required_pull_request_reviews": {
       "dismiss_stale_reviews": true,
       "require_code_owner_reviews": false,
-      "required_approving_review_count": 1
+      "required_approving_review_count": 0
     },
     "required_conversation_resolution": true,
     "required_linear_history": true,

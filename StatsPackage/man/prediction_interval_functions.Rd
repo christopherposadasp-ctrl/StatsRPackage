@@ -46,3 +46,6 @@ and optional printed summaries controlled by \code{digits} and \code{quiet}.
 \item \code{pi_mu()}: Prediction interval for a future observation.
 
 }}
+\examples{
+pi_mu(xbar = 12.4, n = 15, s = 3.2, quiet = TRUE)
+}

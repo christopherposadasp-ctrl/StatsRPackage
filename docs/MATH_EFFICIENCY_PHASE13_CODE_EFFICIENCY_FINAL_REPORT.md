@@ -50,23 +50,23 @@ release tags changed.
 
 Primary static and profiling targets:
 
-- `StatsPackage -1.0/R/n-required-functions.R`
-- `StatsPackage -1.0/R/power-functions.R`
-- `StatsPackage -1.0/R/hypothesis-test-functions.R`
-- `StatsPackage -1.0/R/chisq-functions.R`
+- `StatsPackage/R/n-required-functions.R`
+- `StatsPackage/R/power-functions.R`
+- `StatsPackage/R/hypothesis-test-functions.R`
+- `StatsPackage/R/chisq-functions.R`
 
 Supporting files reviewed as needed:
 
-- `StatsPackage -1.0/R/chisq-helpers.R.R`
-- `StatsPackage -1.0/R/power-helpers.R`
-- `StatsPackage -1.0/tests/testthat/test-chisq-functions.R`
+- `StatsPackage/R/chisq-helpers.R.R`
+- `StatsPackage/R/power-helpers.R`
+- `StatsPackage/tests/testthat/test-chisq-functions.R`
 
 ## Production Change
 
 Commit: `fba0b21` (`Fix Poisson GOF sparse class combining`)
 
 Changed helper: `.combine_pois_right_tail()` in
-`StatsPackage -1.0/R/chisq-helpers.R.R`
+`StatsPackage/R/chisq-helpers.R.R`
 
 What changed:
 
@@ -132,7 +132,7 @@ Conclusion: no broad efficiency refactor is justified by the measured evidence.
 Final full test suite:
 
 ```r
-devtools::test("StatsPackage -1.0")
+devtools::test("StatsPackage")
 ```
 
 Reported result:

@@ -17,12 +17,12 @@ public APIs were changed during this phase.
 
 ## API and Documentation Alignment
 
-- Exported function count from `StatsPackage -1.0/NAMESPACE`: 29.
+- Exported function count from `StatsPackage/NAMESPACE`: 29.
 - `docs/API_INDEX.md` has no missing or extra exported functions.
 - Generated `.Rd` aliases cover all 29 exported functions.
-- `README.md`, `StatsPackage -1.0/vignettes/getting-started.Rmd`, and
+- `README.md`, `StatsPackage/vignettes/getting-started.Rmd`, and
   `2.CheatsheetV8.r` each reference all 29 exported functions by name.
-- `pi_mu()` remains the newest exported API from `StatsPackage -1.0/NEWS.md`
+- `pi_mu()` remains the newest exported API from `StatsPackage/NEWS.md`
   and should receive extra scrutiny in the formula-level audit.
 
 ## Signature Inventory
@@ -98,18 +98,18 @@ No Phase 1 policy mismatches were found.
 
 Targeted Phase 1 test filters reported clean test results:
 
-- `devtools::test("StatsPackage -1.0", filter = "prediction")`:
+- `devtools::test("StatsPackage", filter = "prediction")`:
   25 passed, 0 failed, 0 warnings, 0 skipped.
-- `devtools::test("StatsPackage -1.0", filter = "hypothesis")`:
+- `devtools::test("StatsPackage", filter = "hypothesis")`:
   80 passed, 0 failed, 0 warnings, 0 skipped.
-- `devtools::test("StatsPackage -1.0", filter = "chisq")`:
+- `devtools::test("StatsPackage", filter = "chisq")`:
   49 passed, 0 failed, 0 warnings, 0 skipped.
-- `devtools::test("StatsPackage -1.0", filter = "power|n-required|width|ci|shape")`:
+- `devtools::test("StatsPackage", filter = "power|n-required|width|ci|shape")`:
   252 passed, 0 failed, 0 warnings, 0 skipped.
 
 The full test suite also reported clean results:
 
-- `devtools::test("StatsPackage -1.0")`:
+- `devtools::test("StatsPackage")`:
   406 passed, 0 failed, 0 warnings, 0 skipped.
 
 The known local Windows R process-exit anomaly persisted after each

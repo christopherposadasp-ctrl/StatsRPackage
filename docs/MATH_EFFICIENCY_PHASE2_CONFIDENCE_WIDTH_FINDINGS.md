@@ -62,7 +62,7 @@ The independent width formula and minimality audit passed.
 ## Test Changes
 
 Added focused formula-lock tests in
-`StatsPackage -1.0/tests/testthat/test-ci.R` for:
+`StatsPackage/tests/testthat/test-ci.R` for:
 
 - one-sample and paired `ci_mu()` t intervals;
 - one-sided `ci_mu()` finite-bound formulas;
@@ -81,11 +81,11 @@ No production code changes were made.
   passed.
 - Independent width formula/minimality audit script:
   passed.
-- `devtools::test("StatsPackage -1.0", filter = "ci")`:
+- `devtools::test("StatsPackage", filter = "ci")`:
   85 passed, 0 failed, 0 warnings, 0 skipped.
-- `devtools::test("StatsPackage -1.0", filter = "width")`:
+- `devtools::test("StatsPackage", filter = "width")`:
   50 passed, 0 failed, 0 warnings, 0 skipped.
-- `devtools::test("StatsPackage -1.0")`:
+- `devtools::test("StatsPackage")`:
   463 passed, 0 failed, 0 warnings, 0 skipped.
 
 The known local Windows R process-exit anomaly persisted after the

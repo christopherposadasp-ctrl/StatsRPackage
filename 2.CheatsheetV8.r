@@ -2,7 +2,7 @@
 # you can delete or comment out this block.
 
 
-required_version <- "1.1.0"
+required_version <- "1.1.1"
 
 if (!requireNamespace("remotes", quietly = TRUE)) {
   install.packages("remotes")
@@ -12,7 +12,7 @@ if (!requireNamespace("StatsPackage", quietly = TRUE) ||
     utils::packageVersion("StatsPackage") < required_version) {
   remotes::install_github(
     "christopherposadasp-ctrl/StatsRPackage",
-    subdir = "StatsPackage -1.0",
+    subdir = "StatsPackage",
     ref = required_version
   )
 }
@@ -23,18 +23,18 @@ if (!requireNamespace("StatsPackage", quietly = TRUE) ||
 library(StatsPackage)
 #############################################################
 # Optional local validation:
-# devtools::test(pkg = "StatsPackage -1.0")
+# devtools::test(pkg = "StatsPackage")
 defs <- list(
 
   `1) Descriptive Statistics` = c(
     "Population (N): the full group of interest.",
     "Sample (n): a subset of the population, selected to draw inferences about the population.",
-    "Parameter (Î¼, ÏƒÂ², p, Î¸): a numerical characteristic of the population distribution; fixed but unknown.",
-    "Statistic (XÌ„, SÂ², pÌ‚, Î¸Ì‚): a function of observable random variables in a sample and known constants.",
+    "Parameter (μ, σ², p, θ): a numerical characteristic of the population distribution; fixed but unknown.",
+    "Statistic (X̄, S², p̂, θ̂): a function of observable random variables in a sample and known constants.",
     "Data types: numerical can be discrete (counts) or continuous (measurements).",
     "Measures of location: mean, median, mode. Median is more robust to outliers than mean.",
-    "Percentiles/quantiles: p-th percentile has p% of data at or below it; p-th quantile is the same idea on a 0â€“1 scale.",
-    "Quartiles/IQR: Q1 = 25th percentile, Q3 = 75th percentile; IQR = Q3 âˆ’ Q1.",
+    "Percentiles/quantiles: p-th percentile has p% of data at or below it; p-th quantile is the same idea on a 0–1 scale.",
+    "Quartiles/IQR: Q1 = 25th percentile, Q3 = 75th percentile; IQR = Q3 − Q1.",
 # Data Types:
     "Discrete: Countable numeric values, usually whole-number counts.",
     "Continuous: Numeric values measured on a continuum; can take any value in an interval.",
@@ -47,53 +47,53 @@ defs <- list(
   ),
 
   `2) Sampling Distributions & CLT` = c(
-    "Simple Random Sample (SRS) / iid: X1,â€¦,Xn are independent and identically distributed from the same population distribution (same Î¼, ÏƒÂ²).",
+    "Simple Random Sample (SRS) / iid: X1,…,Xn are independent and identically distributed from the same population distribution (same μ, σ²).",
     "Other samples: stratified, cluster, systematic.",
     "Sampling distribution: the probability distribution of a statistic over repeated SRS of size n.",
-    "Standard error (SE): the SD of a statistic (e.g., SE(XÌ„) = Ïƒ/âˆšn). Estimated SE plugs in s for Ïƒ.",
-    "Linear combination: a1X1 + â‹¯ + anXn for constants ai (special cases: sum, mean).",
-    "Normal algebra (closure): linear combinations of independent normal RVs are normal. If X ~ N(Î¼, ÏƒÂ²), then aX + b ~ N(aÎ¼ + b, aÂ²ÏƒÂ²).",
+    "Standard error (SE): the SD of a statistic (e.g., SE(X̄) = σ/√n). Estimated SE plugs in s for σ.",
+    "Linear combination: a1X1 + ⋯ + anXn for constants ai (special cases: sum, mean).",
+    "Normal algebra (closure): linear combinations of independent normal RVs are normal. If X ~ N(μ, σ²), then aX + b ~ N(aμ + b, a²σ²).",
     "Central limit theorem (CLT): for large n, sums/means of iid RVs are approximately normal, regardless of population shape (approx improves as n increases).",
-    "Normal approximation to Binomial: if large-enough conditions hold, Bin(n,p) â‰ˆ N(np, np(1-p)); continuity correction Â±0.5."
+    "Normal approximation to Binomial: if large-enough conditions hold, Bin(n,p) ≈ N(np, np(1-p)); continuity correction ±0.5."
   ),
 
   `3) Point Estimation` = c(
-    "Parameter vs estimator vs estimate: Î¸ is fixed (unknown). Î¸Ì‚ is a statistic (random variable). An estimate is the realized numeric value after observing data.",
+    "Parameter vs estimator vs estimate: θ is fixed (unknown). θ̂ is a statistic (random variable). An estimate is the realized numeric value after observing data.",
     "Estimator: a rule/formula that tells how to calculate an estimate from sample measurements.",
-    "Unbiased / bias: Î¸Ì‚ is unbiased if E[Î¸Ì‚] = Î¸ for all Î¸.",
-    "Standard error (SE): SE(Î¸Ì‚) = SD(Î¸Ì‚). Estimated SE plugs in sample estimates for unknown parameters.",
-    "Mean squared error (MSE): measures overall accuracy (variance + biasÂ²). Lower MSE is better.",
-    "Minimum Variance Unbiased Estimator (MVUE): unbiased estimator with minimum variance among unbiased estimators of Î¸.",
-    "Method of Moments (MoM): solve for parameters by matching population moments E[X^k] to sample moments (1/n)âˆ‘X_i^k (not guaranteed unbiased).",
+    "Unbiased / bias: θ̂ is unbiased if E[θ̂] = θ for all θ.",
+    "Standard error (SE): SE(θ̂) = SD(θ̂). Estimated SE plugs in sample estimates for unknown parameters.",
+    "Mean squared error (MSE): measures overall accuracy (variance + bias²). Lower MSE is better.",
+    "Minimum Variance Unbiased Estimator (MVUE): unbiased estimator with minimum variance among unbiased estimators of θ.",
+    "Method of Moments (MoM): solve for parameters by matching population moments E[X^k] to sample moments (1/n)∑X_i^k (not guaranteed unbiased).",
 #   "Likelyhood:The likelihood function is the joint distribution viewed as a function of the unknown parameters given the known data." this is the same as Likelihood function
     "Likelihood function: the joint distribution viewed as a function of the unknown parameters given the known data.",
-    "Maximum Likelihood Estimator (MLE): choose parameter(s) maximizing likelihood L(Î¸|x) (often maximize log-likelihood).",
-    "Invariance of MLE: if Î¸Ì‚ is MLE of Î¸ and h is one-to-one, then h(Î¸Ì‚) is MLE of h(Î¸).",
-    "Memoryless property: only geometric and exponential distributions have it (past doesnâ€™t matter given survival)."
+    "Maximum Likelihood Estimator (MLE): choose parameter(s) maximizing likelihood L(θ|x) (often maximize log-likelihood).",
+    "Invariance of MLE: if θ̂ is MLE of θ and h is one-to-one, then h(θ̂) is MLE of h(θ).",
+    "Memoryless property: only geometric and exponential distributions have it (past doesn’t matter given survival)."
   ),
 
   `4) Interval Estimation / Confidence Intervals` = c(
-    "Confidence interval: a random interval [L(X), U(X)] such that P(L(X) â‰¤ Î¸ â‰¤ U(X)) = 1 âˆ’ Î±, where 1 âˆ’ Î± is the confidence level.",
-    "Correct interpretation: Î¸ is fixed (unknown); the interval is random before sampling. After computing it, the realized interval is fixed and either contains Î¸ or it doesnâ€™t.",
-    "Effect of n: increasing n generally makes the CI narrower (precision â†‘) but does not change the nominal confidence level (coverage stays 1 âˆ’ Î± if assumptions hold).",
-    "CI vs prediction interval: a CI for Î¼ is not about a future value X_(n+1). A prediction interval targets X_(n+1) and is typically wider.",
-    "Pivotal quantity: a function of the sample data and Î¸, where Î¸ is the only unknown quantity. Moreover, the probability distribution of the pivotal quantity is known and does not depend on Î¸."
+    "Confidence interval: a random interval [L(X), U(X)] such that P(L(X) ≤ θ ≤ U(X)) = 1 − α, where 1 − α is the confidence level.",
+    "Correct interpretation: θ is fixed (unknown); the interval is random before sampling. After computing it, the realized interval is fixed and either contains θ or it doesn’t.",
+    "Effect of n: increasing n generally makes the CI narrower (precision ↑) but does not change the nominal confidence level (coverage stays 1 − α if assumptions hold).",
+    "CI vs prediction interval: a CI for μ is not about a future value X_(n+1). A prediction interval targets X_(n+1) and is typically wider.",
+    "Pivotal quantity: a function of the sample data and θ, where θ is the only unknown quantity. Moreover, the probability distribution of the pivotal quantity is known and does not depend on θ."
   ),
 
   `5) Hypothesis Testing` = c(
-    "Statistical hypothesis: a statement about the value of one or more population characteristics (e.g., parameters such as Î¼ = Î¼0).",
-    "Type I error (Î±): rejecting H0 when H0 is true.",
-    "Type II error (Î²): failing to reject H0 when H0 is false (i.e., Ha is true).",
+    "Statistical hypothesis: a statement about the value of one or more population characteristics (e.g., parameters such as μ = μ0).",
+    "Type I error (α): rejecting H0 when H0 is true.",
+    "Type II error (β): failing to reject H0 when H0 is false (i.e., Ha is true).",
     "Test statistic: a function of the data (with known distribution if H0 is true) used to decide whether to reject H0.",
     "Rejection region: the set of test statistic values for which H0 will be rejected.",
     "P-value: the probability, assuming H0 is true, of observing a test statistic as extreme or more extreme than what was observed.",
-    "Significance level (Î±): acceptable Type I error rate; reject H0 iff p-value < Î±.",
-    "Power: P(reject H0 | a specified alternative Ha is true) = 1 âˆ’ Î² (viewed as a function of the Ha parameter)."
+    "Significance level (α): acceptable Type I error rate; reject H0 iff p-value < α.",
+    "Power: P(reject H0 | a specified alternative Ha is true) = 1 − β (viewed as a function of the Ha parameter)."
   ),
     `6) Nonparametric Methods & Bootstrap` = c(
     "Bootstrap / bootstrapping: a resampling method that estimates the sampling distribution of a statistic by repeatedly sampling with replacement from the observed data.",
     "Bootstrap sample (x*): a sample of size n drawn with replacement from the original data.",
-    "Bootstrap replication (Î¸Ì‚*): the value of the statistic computed from one bootstrap sample; repeating this many times approximates the sampling distribution.",
+    "Bootstrap replication (θ̂*): the value of the statistic computed from one bootstrap sample; repeating this many times approximates the sampling distribution.",
     "Nonparametric / distribution-free: methods that do not assume a specific population distribution; often based on ranks rather than raw values.",
     "Wilcoxon signed-rank test: a nonparametric alternative to the one-sample or paired t-test; tests whether the population median (or median difference) equals a hypothesized value.",
     "Wilcoxon rank-sum test (Mann-Whitney): a nonparametric alternative to the two-sample t-test; tests whether two independent populations have the same location."
@@ -486,7 +486,7 @@ var_test_chisq(s = c(4.2, 5.0), n = c(12, 10), ratio0 = 1, alternative = "less")
 # Use for:
 #   one-sample : Wilcoxon signed-rank test:                x = sample vector, y = NULL, mu = hypothesized value
 #   paired     : Wilcoxon signed-rank test on differences: x and y are matched samples, paired = TRUE
-#   two-sample : Wilcoxon rank-sum / Mannâ€“Whitney test:    x and y are independent samples, paired = FALSE
+#   two-sample : Wilcoxon rank-sum / Mann–Whitney test:    x and y are independent samples, paired = FALSE
 #############################################################
 
 x <- c(30.6, 30.1, 15.6, 26.7, 27.1)
@@ -495,7 +495,7 @@ y <- c(55.0, 55.7, 62.9, 45.5, 51.1)
 wilcox.test(x, mu = 30, alternative = "less")
 # paired signed-rank
 wilcox.test(x, y, paired = TRUE)
-# two-sample rank-sum / Mannâ€“Whitney
+# two-sample rank-sum / Mann–Whitney
 wilcox.test(x, y)
 
 x <- c(30.6, 30.1, 15.6, 26.7, 27.1, 25.4, 35.0, 30.8,

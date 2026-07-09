@@ -4,10 +4,10 @@ Audit baseline: `codex/math-efficiency-audit` after Phase 7 findings commit `569
 
 Phase 8 reviewed code efficiency, simplification opportunities, solver behavior, and numerical stability in:
 
-- `StatsPackage -1.0/R/n-required-functions.R`
-- `StatsPackage -1.0/R/power-functions.R`
-- `StatsPackage -1.0/R/power-helpers.R`
-- `StatsPackage -1.0/R/hypothesis-test-functions.R`
+- `StatsPackage/R/n-required-functions.R`
+- `StatsPackage/R/power-functions.R`
+- `StatsPackage/R/power-helpers.R`
+- `StatsPackage/R/hypothesis-test-functions.R`
 
 One production change was made and committed separately as `61ef4f0` (`Improve upper-tail probability stability`). It preserves public APIs, defaults, result field names, result classes, and printed-output templates. The only intentional behavior change is improved numerical precision for extreme upper-tail probabilities that are mathematically nonzero.
 
@@ -52,8 +52,8 @@ This is a numerical-stability correction, not an API or default-policy change.
 
 Focused tests were added or aligned in:
 
-- `StatsPackage -1.0/tests/testthat/test-hypothesis-tests.R`
-- `StatsPackage -1.0/tests/testthat/test-power.R`
+- `StatsPackage/tests/testthat/test-hypothesis-tests.R`
+- `StatsPackage/tests/testthat/test-power.R`
 
 Coverage now includes:
 
@@ -68,9 +68,9 @@ No generated documentation, README, vignette, or cheat-sheet source files were c
 Commands run:
 
 ```r
-devtools::test("StatsPackage -1.0", filter = "hypothesis")
-devtools::test("StatsPackage -1.0", filter = "power")
-devtools::test("StatsPackage -1.0")
+devtools::test("StatsPackage", filter = "hypothesis")
+devtools::test("StatsPackage", filter = "power")
+devtools::test("StatsPackage")
 ```
 
 Reported results:

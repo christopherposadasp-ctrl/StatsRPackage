@@ -28,7 +28,7 @@ Full test suite command:
 
 ```powershell
 $env:R_LIBS_USER="$env:LOCALAPPDATA\StatsPackageAudit\Rlib-4.6.0"
-& "C:\Program Files (x86)\R\R-4.6.0\bin\x64\Rscript.exe" --vanilla -e ".libPaths(Sys.getenv('R_LIBS_USER')); devtools::test('StatsPackage -1.0')"
+& "C:\Program Files (x86)\R\R-4.6.0\bin\x64\Rscript.exe" --vanilla -e ".libPaths(Sys.getenv('R_LIBS_USER')); devtools::test('StatsPackage')"
 ```
 
 Reported result:
@@ -55,18 +55,18 @@ Local `devtools::check()` was not rerun in Phase 10.
 
 Primary review targets:
 
-- `StatsPackage -1.0/R/n-required-functions.R`
-- `StatsPackage -1.0/R/power-functions.R`
-- `StatsPackage -1.0/R/hypothesis-test-functions.R`
-- `StatsPackage -1.0/R/chisq-functions.R`
+- `StatsPackage/R/n-required-functions.R`
+- `StatsPackage/R/power-functions.R`
+- `StatsPackage/R/hypothesis-test-functions.R`
+- `StatsPackage/R/chisq-functions.R`
 
 Helper files reviewed for existing support and possible local simplification:
 
-- `StatsPackage -1.0/R/ht-helpers.R`
-- `StatsPackage -1.0/R/power-helpers.R`
-- `StatsPackage -1.0/R/chisq-helpers.R.R`
-- `StatsPackage -1.0/R/ci-helpers.R`
-- `StatsPackage -1.0/R/width-helpers.R`
+- `StatsPackage/R/ht-helpers.R`
+- `StatsPackage/R/power-helpers.R`
+- `StatsPackage/R/chisq-helpers.R.R`
+- `StatsPackage/R/ci-helpers.R`
+- `StatsPackage/R/width-helpers.R`
 
 Lightweight static metrics:
 

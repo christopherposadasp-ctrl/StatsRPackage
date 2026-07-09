@@ -66,3 +66,8 @@ and optional printed summaries controlled by \code{digits} and \code{quiet}.
 \item \code{n_width_mu_t()}: Required sample size for a t interval for a mean.
 
 }}
+\examples{
+n_width_mu_z(w = 2, sigma = 10, quiet = TRUE)
+n_width_mu_t(w = 4, s = 15, quiet = TRUE)
+n_width_p_wald(w = 0.1, quiet = TRUE)
+}

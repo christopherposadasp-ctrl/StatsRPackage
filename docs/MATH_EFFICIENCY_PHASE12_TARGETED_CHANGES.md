@@ -22,8 +22,8 @@ Poisson samples, the old right-tail combiner could move the cutoff down until
 the fitted distribution collapsed into too few classes, producing nonpositive
 degrees of freedom after estimating `lambda`.
 
-The fix is limited to `StatsPackage -1.0/R/chisq-helpers.R.R` and is covered by
-a focused regression test in `StatsPackage -1.0/tests/testthat/test-chisq-functions.R`.
+The fix is limited to `StatsPackage/R/chisq-helpers.R.R` and is covered by
+a focused regression test in `StatsPackage/tests/testthat/test-chisq-functions.R`.
 No exported functions, signatures, defaults, result classes, printed-output
 templates, generated docs, README, vignette, cheat sheet, release tags, or
 published release artifacts were changed.
@@ -92,14 +92,14 @@ net-short simplification is identified.
 
 Targeted chi-square tests:
 
-- Command: `devtools::test("StatsPackage -1.0", filter = "chisq")`
+- Command: `devtools::test("StatsPackage", filter = "chisq")`
 - Package output: `FAIL 0 | WARN 0 | SKIP 0 | PASS 99`
 - Local process status: nonzero Rscript exit after clean output, matching the
   known local Rscript / `Rcmd.exe` anomaly.
 
 Full test suite:
 
-- Command: `devtools::test("StatsPackage -1.0")`
+- Command: `devtools::test("StatsPackage")`
 - Package output: `FAIL 0 | WARN 0 | SKIP 0 | PASS 636`
 - Local process status: nonzero Rscript exit after clean output, matching the
   known local Rscript / `Rcmd.exe` anomaly.

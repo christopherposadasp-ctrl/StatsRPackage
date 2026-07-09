@@ -14,14 +14,15 @@ The project priorities are:
 - reusable workflows beyond a single assignment
 - regression-tested behavior
 
-Current package version: `1.1.0` (stable public API plus prediction intervals)
+Current package version: `1.1.1` (stable API plus numerical and release hardening)
 
 ## Repository Layout
 
 | Path | Purpose |
 | --- | --- |
-| `StatsPackage -1.0/` | R package source (`R/`, `man/`, `tests/`, `DESCRIPTION`) |
-| `2.CheatsheetV8.r` | End-to-end usage and output regression script |
+| `StatsPackage/` | R package source (`R/`, `man/`, `tests/`, `DESCRIPTION`) |
+| `2.CheatsheetV8.r` | Full API usage and output regression script |
+| `2.CheatsheetV9_Narrow.r` | Focused classroom workflow cheat sheet |
 | `scripts/qa_cheatsheet_audit.R` | Structured cheat-sheet audit runner |
 | `docs/` | Project brief and supporting documentation |
 
@@ -30,17 +31,17 @@ Current package version: `1.1.0` (stable public API plus prediction intervals)
 Install from this local repository:
 
 ```r
-devtools::install("StatsPackage -1.0")
+devtools::install("StatsPackage")
 library(StatsPackage)
 ```
 
-Install from GitHub (canonical classroom deployment command, pinned to `1.1.0`):
+Install from GitHub (canonical classroom deployment command, pinned to `1.1.1`):
 
 ```r
 remotes::install_github(
   "christopherposadasp-ctrl/StatsRPackage",
-  subdir = "StatsPackage -1.0",
-  ref = "1.1.0"
+  subdir = "StatsPackage",
+  ref = "1.1.1"
 )
 library(StatsPackage)
 ```
@@ -48,9 +49,11 @@ library(StatsPackage)
 ## Quickstart
 
 ```r
-devtools::load_all("StatsPackage -1.0")
-devtools::test("StatsPackage -1.0")
+devtools::load_all("StatsPackage")
+devtools::test("StatsPackage")
 source("2.CheatsheetV8.r")
+# Or run the focused classroom workflows:
+source("2.CheatsheetV9_Narrow.r")
 ```
 
 ## API and Defaults
@@ -58,21 +61,24 @@ source("2.CheatsheetV8.r")
 - API index by function family: [docs/API_INDEX.md](docs/API_INDEX.md)
 - Default behavior policies: [docs/DEFAULT_POLICIES.md](docs/DEFAULT_POLICIES.md)
 - QA and release workflow: [docs/QA_WORKFLOW.md](docs/QA_WORKFLOW.md)
-- Changelog: [StatsPackage -1.0/NEWS.md](StatsPackage%20-1.0/NEWS.md)
+- Repository audit remediation: [docs/REPOSITORY_AUDIT_REMEDIATION.md](docs/REPOSITORY_AUDIT_REMEDIATION.md)
+- Changelog: [StatsPackage/NEWS.md](StatsPackage/NEWS.md)
+- Security policy: [SECURITY.md](SECURITY.md)
+- Citation metadata: [CITATION.cff](CITATION.cff)
 
 ## Site and Vignettes
 
 - Pkgdown site: [christopherposadasp-ctrl.github.io/StatsRPackage](https://christopherposadasp-ctrl.github.io/StatsRPackage/)
-- Getting started vignette source: [getting-started.Rmd](StatsPackage%20-1.0/vignettes/getting-started.Rmd)
+- Getting started vignette source: [getting-started.Rmd](StatsPackage/vignettes/getting-started.Rmd)
 
 ## Quality Gates
 
 Minimum local quality checks:
 
 ```r
-devtools::test("StatsPackage -1.0")
-devtools::check("StatsPackage -1.0")
-lintr::lint_dir("StatsPackage -1.0/R")
+devtools::test("StatsPackage")
+devtools::check("StatsPackage")
+lintr::lint_dir("StatsPackage/R")
 ```
 
 Cheat-sheet regression audit:

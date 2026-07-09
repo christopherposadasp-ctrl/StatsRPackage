@@ -72,7 +72,7 @@ The independent variance-test formula audit passed.
 ## Test Changes
 
 Added focused formula-lock tests in
-`StatsPackage -1.0/tests/testthat/test-hypothesis-tests.R` for:
+`StatsPackage/tests/testthat/test-hypothesis-tests.R` for:
 
 - `z_test_mu()` critical and estimate-critical boundaries;
 - `t_test_mu()` critical and estimate-critical boundaries;
@@ -89,9 +89,9 @@ No production code changes were made.
   passed.
 - Independent proportion and variance formula audit script:
   passed.
-- `devtools::test("StatsPackage -1.0", filter = "hypothesis")`:
+- `devtools::test("StatsPackage", filter = "hypothesis")`:
   128 passed, 0 failed, 0 warnings, 0 skipped.
-- `devtools::test("StatsPackage -1.0")`:
+- `devtools::test("StatsPackage")`:
   511 passed, 0 failed, 0 warnings, 0 skipped.
 
 The known local Windows R process-exit anomaly persisted after the

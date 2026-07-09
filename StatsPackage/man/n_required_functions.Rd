@@ -159,3 +159,19 @@ and optional printed summaries controlled by \code{digits} and \code{quiet}.
 \item \code{n_required_var_ratio_F()}: Required sample size for two-sample F tests of a variance ratio.
 
 }}
+\examples{
+n_required_from_power(
+  power_at_n = function(n) min(1, n / 20),
+  target_power = 0.8,
+  quiet = TRUE
+)
+n_required_z_mu(mu_a = 1, mu0 = 0, sigma = 1, beta_target = 0.2, quiet = TRUE)
+n_required_t_mu(mu_a = 1, mu0 = 0, sigma_true = 1, beta_target = 0.2, quiet = TRUE)
+n_required_p_z(p_a = 0.15, p0 = 0.1, beta_target = 0.2, quiet = TRUE)
+n_required_var_chisq(sigma_a = 2, sigma0 = 1, beta_target = 0.2, quiet = TRUE)
+n_required_var_ratio_F(
+  sigma_a = c(1, 2),
+  beta_target = 0.2,
+  quiet = TRUE
+)
+}

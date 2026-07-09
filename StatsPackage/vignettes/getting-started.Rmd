@@ -96,8 +96,8 @@ n_required_z_mu(mu_a = 103, mu0 = 100, sigma = 10, beta_target = 0.1, quiet = TR
 For local validation before publishing:
 
 ```r
-devtools::test("StatsPackage -1.0")
-devtools::check("StatsPackage -1.0")
+devtools::test("StatsPackage")
+devtools::check("StatsPackage")
 source("2.CheatsheetV8.r")
 ```
 

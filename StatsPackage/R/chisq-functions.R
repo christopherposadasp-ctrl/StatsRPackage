@@ -55,6 +55,18 @@
 #' For `table_props()`, a classed `table_props_result` object is returned with
 #' the original table and the requested proportions.
 #'
+#' @examples
+#' chisq_gof_probs(
+#'   observed = c(315, 108, 101, 32),
+#'   p = c(9, 3, 3, 1) / 16,
+#'   quiet = TRUE
+#' )
+#' x_exp <- stats::qexp((seq_len(40) - 0.5) / 40)
+#' chisq_gof_dist(x = x_exp, dist = "exp", k = 5, estimate = TRUE, quiet = TRUE)
+#' counts <- matrix(c(20, 30, 30, 20), nrow = 2)
+#' chisq_table(counts, type = "independence", quiet = TRUE)
+#' table_props(counts, margin = "row", quiet = TRUE)
+#'
 #' @name chisq_functions
 NULL
 
@@ -175,7 +187,7 @@ chisq_gof_probs <- function(observed,
 #' @export
 chisq_gof_dist <- function(x = NULL,
                            observed = NULL,
-  dist = c("exp", "norm", "pois", "unif"),
+                           dist = c("exp", "norm", "pois", "unif"),
                            k = NULL,
                            breaks = NULL,
                            params = NULL,
@@ -294,7 +306,12 @@ chisq_gof_dist <- function(x = NULL,
         mu <- mean(x)
         sigma <- stats::sd(x)
       } else {
-        if (is.null(params)) stop(fun, ": for dist = 'norm', provide params = list(mean = ..., sd = ...) when estimate = FALSE.")
+        if (is.null(params)) {
+          stop(
+            fun,
+            ": for dist = 'norm', provide params = list(mean = ..., sd = ...) when estimate = FALSE."
+          )
+        }
         mu <- params$mean
         if (is.null(mu)) mu <- params$mu
         sigma <- params$sd

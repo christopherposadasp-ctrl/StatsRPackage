@@ -26,7 +26,7 @@ No mathematical defects were found.
 
 ## Tests Added
 
-Focused formula-lock tests were added in `StatsPackage -1.0/tests/testthat/test-power.R` for:
+Focused formula-lock tests were added in `StatsPackage/tests/testthat/test-power.R` for:
 
 - `power_z_mu()` less-tail critical values, estimate boundary, rejection-region shape, and power.
 - `power_t_mu()` Welch less-tail df, critical value, and power.
@@ -55,8 +55,8 @@ The Phase 4 audit preserved:
 Commands run:
 
 ```r
-devtools::test("StatsPackage -1.0", filter = "power")
-devtools::test("StatsPackage -1.0")
+devtools::test("StatsPackage", filter = "power")
+devtools::test("StatsPackage")
 ```
 
 Reported results:

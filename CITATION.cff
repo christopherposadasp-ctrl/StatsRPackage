@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use StatsPackage, please cite this software."
+type: software
+title: "StatsPackage: Statistical Functions for Introductory Inference and Design"
+authors:
+  - family-names: "Posadas"
+    given-names: "Chris"
+version: 1.1.1
+license: MIT
+repository-code: "https://github.com/christopherposadasp-ctrl/StatsRPackage"
+url: "https://christopherposadasp-ctrl.github.io/StatsRPackage/"

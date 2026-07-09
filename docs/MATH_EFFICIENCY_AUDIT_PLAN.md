@@ -156,7 +156,7 @@ reopening mathematical behavior that is already locked.
   `codex/code-efficiency-audit`.
 - Confirm exported function count remains `29`.
 - Run and record:
-  - `devtools::test("StatsPackage -1.0")`
+  - `devtools::test("StatsPackage")`
   - `Rscript scripts/qa_cheatsheet_audit.R`
 - Treat local `devtools::check()` as non-blocking unless the local Rscript
   anomaly has been fixed.
@@ -175,10 +175,10 @@ Review production code for:
 
 Primary review targets:
 
-- `StatsPackage -1.0/R/n-required-functions.R`
-- `StatsPackage -1.0/R/power-functions.R`
-- `StatsPackage -1.0/R/hypothesis-test-functions.R`
-- `StatsPackage -1.0/R/chisq-functions.R`
+- `StatsPackage/R/n-required-functions.R`
+- `StatsPackage/R/power-functions.R`
+- `StatsPackage/R/hypothesis-test-functions.R`
+- `StatsPackage/R/chisq-functions.R`
 
 Secondary targets:
 
@@ -280,14 +280,14 @@ Investigate, in order:
 
 After each production change, run the narrowest affected test slice first:
 
-- `devtools::test("StatsPackage -1.0", filter = "n-required")`
-- `devtools::test("StatsPackage -1.0", filter = "power")`
-- `devtools::test("StatsPackage -1.0", filter = "hypothesis")`
-- `devtools::test("StatsPackage -1.0", filter = "chisq")`
+- `devtools::test("StatsPackage", filter = "n-required")`
+- `devtools::test("StatsPackage", filter = "power")`
+- `devtools::test("StatsPackage", filter = "hypothesis")`
+- `devtools::test("StatsPackage", filter = "chisq")`
 
 Then run:
 
-- `devtools::test("StatsPackage -1.0")`
+- `devtools::test("StatsPackage")`
 - `Rscript scripts/qa_cheatsheet_audit.R`
 
 If a change claims performance improvement, record before/after timing in the
@@ -318,7 +318,7 @@ Create `docs/MATH_EFFICIENCY_PHASE13_CODE_EFFICIENCY_FINAL_REPORT.md` with:
 
 Run:
 
-- `devtools::test("StatsPackage -1.0")`
+- `devtools::test("StatsPackage")`
 - `Rscript scripts/qa_cheatsheet_audit.R`
 
 Open a PR and require clean GitHub Actions before merging. Clean CI should

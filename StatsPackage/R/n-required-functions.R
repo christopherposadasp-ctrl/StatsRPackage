@@ -29,6 +29,21 @@
 #' @param sigma_a True standard deviation value or vector under the alternative.
 #' @param sigma0 Null-hypothesis standard deviation for the chi-square variance test.
 #' @param ratio0 Null-hypothesis variance ratio for the F test.
+#' @examples
+#' n_required_from_power(
+#'   power_at_n = function(n) min(1, n / 20),
+#'   target_power = 0.8,
+#'   quiet = TRUE
+#' )
+#' n_required_z_mu(mu_a = 1, mu0 = 0, sigma = 1, beta_target = 0.2, quiet = TRUE)
+#' n_required_t_mu(mu_a = 1, mu0 = 0, sigma_true = 1, beta_target = 0.2, quiet = TRUE)
+#' n_required_p_z(p_a = 0.15, p0 = 0.1, beta_target = 0.2, quiet = TRUE)
+#' n_required_var_chisq(sigma_a = 2, sigma0 = 1, beta_target = 0.2, quiet = TRUE)
+#' n_required_var_ratio_F(
+#'   sigma_a = c(1, 2),
+#'   beta_target = 0.2,
+#'   quiet = TRUE
+#' )
 #' @name n_required_functions
 NULL
 
@@ -1300,7 +1315,11 @@ n_required_t_mu <- function(mu_a,
   }
 
   if (paired) {
-    stop(fun, ": paired = TRUE is not available for two-sample designs; supply the paired-difference mean as scalar mu_a.")
+    stop(
+      fun,
+      ": paired = TRUE is not available for two-sample designs; ",
+      "supply the paired-difference mean as scalar mu_a."
+    )
   }
 
   delta_a <- mu_a[1L] - mu_a[2L]
