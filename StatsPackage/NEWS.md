@@ -1,3 +1,16 @@
+# StatsPackage 1.1.1
+
+- Improve numerical precision for extreme upper-tail probabilities in
+  hypothesis-test and power calculations.
+- Fix sparse-class combining for high-lambda estimated Poisson goodness-of-fit
+  tests so valid inputs retain positive degrees of freedom.
+- Add focused mathematical regression tests and raise the enforced coverage
+  threshold to 80%.
+- Add runnable examples for all exported functions and validate both supported
+  cheat sheets in release QA.
+- Normalize the package source directory and helper-file naming.
+- Harden release automation, package checks, and GitHub Actions dependencies.
+
 # StatsPackage 1.1.0
 
 - Add `pi_mu()` for one-sample prediction intervals for a future observation

@@ -20,5 +20,10 @@ Useful links:
 \author{
 \strong{Maintainer}: Chris Posadas \email{christopher.v.posadas@nps.edu}
 
+Authors:
+\itemize{
+  \item Chris Posadas \email{christopher.v.posadas@nps.edu}
+}
+
 }
 \keyword{internal}

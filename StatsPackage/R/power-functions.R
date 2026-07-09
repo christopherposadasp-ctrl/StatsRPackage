@@ -24,6 +24,12 @@
 #' @param sigma_a True standard deviation value or vector under the alternative.
 #' @param sigma0 Null-hypothesis standard deviation for the chi-square variance test.
 #' @param ratio0 Null-hypothesis variance ratio for the F test.
+#' @examples
+#' power_z_mu(mu_a = 10.4, mu0 = 10, sigma = 0.5, n = 20, quiet = TRUE)
+#' power_t_mu(mu_a = 5.4, mu0 = 5, sigma_true = 1.2, n = 20, quiet = TRUE)
+#' power_p_z(p_a = 0.3, p0 = 0.25, n = 200, quiet = TRUE)
+#' power_var_chisq(sigma_a = 7, sigma0 = 6, n = 25, quiet = TRUE)
+#' power_var_ratio_F(sigma_a = c(3, 5), n = c(25, 25), quiet = TRUE)
 #' @name power_functions
 NULL
 
@@ -804,7 +810,11 @@ power_p_z <- function(p_a, p0, n,
   continuity <- opts$continuity
 
   if (alternative != "two.sided" && continuity) {
-    .ht_warn_ignored_arg(fun, "continuity", "ignored unless alternative = 'two.sided' in the two-sample proportion power calculation.")
+    .ht_warn_ignored_arg(
+      fun,
+      "continuity",
+      "ignored unless alternative = 'two.sided' in the two-sample proportion power calculation."
+    )
     continuity <- FALSE
   }
 

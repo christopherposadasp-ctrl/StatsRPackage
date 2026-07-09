@@ -51,3 +51,8 @@ and optional printed summaries controlled by \code{digits} and \code{quiet}.
 \item \code{kurt()}: Sample kurtosis measure and interpretation.
 
 }}
+\examples{
+sample_values <- c(1, 1, 2, 2, 3, 9)
+skew(sample_values, quiet = TRUE)
+kurt(sample_values, excess = TRUE, quiet = TRUE)
+}

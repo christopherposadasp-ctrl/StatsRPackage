@@ -5,16 +5,17 @@
 
 ## Scope
 
-- [ ] Package code (`StatsPackage -1.0/R`)
-- [ ] Tests (`StatsPackage -1.0/tests/testthat`)
+- [ ] Package code (`StatsPackage/R`)
+- [ ] Tests (`StatsPackage/tests/testthat`)
 - [ ] Documentation (`README`, `docs`, `man`, vignettes)
 - [ ] Workflows (`.github/workflows`)
 
 ## Validation
 
-- [ ] `devtools::test("StatsPackage -1.0")`
-- [ ] `devtools::check("StatsPackage -1.0")`
-- [ ] `Rscript scripts/qa_cheatsheet_audit.R` (when behavior/output changed)
+- [ ] `devtools::test("StatsPackage")`
+- [ ] `devtools::check("StatsPackage")`
+- [ ] `Rscript scripts/qa_cheatsheet_audit.R`
+- [ ] `Rscript scripts/qa_smoke_release.R`
 
 ## Mathematical correctness notes
 
@@ -27,5 +28,4 @@ Document any formulas, assumptions, null/alternative interpretation details, and
   - [ ] tests
   - [ ] cheat sheet
   - [ ] `docs/DEFAULT_POLICIES.md`
-  - [ ] `StatsPackage -1.0/NEWS.md`
-
+  - [ ] `StatsPackage/NEWS.md`

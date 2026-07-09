@@ -15,18 +15,18 @@ pkgdown workflow fix.
 - Published release tag checked but not altered: `1.1.0`
 - `1.1.0` tag ref observed during baseline setup:
   `e64d2f70390febdea21146bc868b4c6934b211ac`
-- Exported function count from `StatsPackage -1.0/NAMESPACE`: 29
-- Newest exported API from `StatsPackage -1.0/NEWS.md`: `pi_mu()`
+- Exported function count from `StatsPackage/NAMESPACE`: 29
+- Newest exported API from `StatsPackage/NEWS.md`: `pi_mu()`
 - `pi_mu()` should receive extra scrutiny during the audit because it is the
   newest prediction-interval API.
 
 ## Baseline QA
 
-- `devtools::test("StatsPackage -1.0")`: 406 passing assertions by reported
+- `devtools::test("StatsPackage")`: 406 passing assertions by reported
   test output.
 - `scripts/qa_cheatsheet_audit.R`: 154 cheat-sheet expressions evaluated with
   0 recorded issues.
-- `devtools::check("StatsPackage -1.0")`: environment-blocked on this Windows
+- `devtools::check("StatsPackage")`: environment-blocked on this Windows
   workstation during `R CMD build` / vignette rebuild.
 
 Observed `devtools::check()` blocker:

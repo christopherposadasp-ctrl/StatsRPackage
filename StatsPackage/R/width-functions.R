@@ -16,6 +16,10 @@
 #' @param s Sample standard deviation used for t-based width planning.
 #' @param n_start Starting sample size for iterative width planning.
 #' @param max_iter Maximum number of search iterations.
+#' @examples
+#' n_width_mu_z(w = 2, sigma = 10, quiet = TRUE)
+#' n_width_mu_t(w = 4, s = 15, quiet = TRUE)
+#' n_width_p_wald(w = 0.1, quiet = TRUE)
 #' @name width_plan_functions
 NULL
 

@@ -14,6 +14,8 @@
 #' @param side Interval side specification: `"two.sided"`, `"lower"`, or `"upper"`.
 #' @param digits Integer number of decimal places used only for printed output.
 #' @param quiet Logical; if `TRUE`, suppress printed output.
+#' @examples
+#' pi_mu(xbar = 12.4, n = 15, s = 3.2, quiet = TRUE)
 #' @name prediction_interval_functions
 NULL
 

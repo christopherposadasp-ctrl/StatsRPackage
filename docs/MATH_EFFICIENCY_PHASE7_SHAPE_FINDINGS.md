@@ -29,7 +29,7 @@ No mathematical defects were found.
 
 ## Tests Added
 
-Focused tests were added in `StatsPackage -1.0/tests/testthat/test-shape.R` for:
+Focused tests were added in `StatsPackage/tests/testthat/test-shape.R` for:
 
 - left-skewed and approximately symmetric `skew()` interpretation labels;
 - `skew()` invisible return class chain;
@@ -60,8 +60,8 @@ The Phase 7 audit preserved:
 Commands run:
 
 ```r
-devtools::test("StatsPackage -1.0", filter = "shape")
-devtools::test("StatsPackage -1.0")
+devtools::test("StatsPackage", filter = "shape")
+devtools::test("StatsPackage")
 ```
 
 Reported results:

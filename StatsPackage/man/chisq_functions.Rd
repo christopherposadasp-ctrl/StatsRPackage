@@ -82,12 +82,12 @@ positive degrees of freedom after any parameter-estimation adjustment.}
 \item{breaks}{Class boundaries for grouped \code{chisq_gof_dist()} input.}
 
 \item{params}{Named list of distribution parameters when parameters are not
-estimated from raw data. For \code{dist = "unif"}, use \code{min}/\code{max}
-(or \code{lower}/\code{upper}).}
+estimated from raw data. For \code{dist = "unif"}, use \code{min}/\code{max} (or
+\code{lower}/\code{upper}).}
 
 \item{estimate}{Logical; if \code{TRUE}, estimate parameters from raw data where
-applicable. For \code{dist = "unif"}, raw-data estimation uses \code{min(x)}
-and \code{max(x)} and is not supported for grouped counts.}
+applicable. For \code{dist = "unif"}, raw-data estimation uses \code{min(x)} and
+\code{max(x)} and is not supported for grouped counts.}
 
 \item{params_estimated}{Logical; for grouped GOF inputs, whether supplied
 parameters should count against the degrees of freedom.}
@@ -135,3 +135,16 @@ for a contingency table.
 \item \code{table_props()}: Descriptive proportions for a contingency table.
 
 }}
+\examples{
+chisq_gof_probs(
+  observed = c(315, 108, 101, 32),
+  p = c(9, 3, 3, 1) / 16,
+  quiet = TRUE
+)
+x_exp <- stats::qexp((seq_len(40) - 0.5) / 40)
+chisq_gof_dist(x = x_exp, dist = "exp", k = 5, estimate = TRUE, quiet = TRUE)
+counts <- matrix(c(20, 30, 30, 20), nrow = 2)
+chisq_table(counts, type = "independence", quiet = TRUE)
+table_props(counts, margin = "row", quiet = TRUE)
+
+}

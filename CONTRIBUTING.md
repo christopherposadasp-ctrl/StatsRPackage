@@ -5,7 +5,7 @@ Thanks for contributing.
 ## Scope
 
 This repository contains:
-- the R package source in `StatsPackage -1.0/`
+- the R package source in `StatsPackage/`
 - QA scripts and documentation at repository root
 
 ## Development setup
@@ -19,15 +19,16 @@ install.packages(c("devtools", "testthat", "lintr", "covr", "pkgdown"))
 From repository root:
 
 ```r
-devtools::load_all("StatsPackage -1.0")
-devtools::test("StatsPackage -1.0")
-devtools::check("StatsPackage -1.0")
+devtools::load_all("StatsPackage")
+devtools::test("StatsPackage")
+devtools::check("StatsPackage")
 ```
 
 Optional regression run:
 
 ```r
 source("2.CheatsheetV8.r")
+source("2.CheatsheetV9_Narrow.r")
 ```
 
 ## Branch and PR workflow
@@ -48,14 +49,21 @@ PRs should include:
 Required:
 - no regressions in mathematical behavior
 - tests pass
-- package check passes
+- package check passes without errors, warnings, or notes
+- source files pass the configured `lintr` profile
 - docs and defaults stay aligned
+
+The lint profile keeps the established public dotted argument names (for
+example, `conf.level`) and existing continuation indentation. It still enforces
+the remaining default static checks, a 120-character line limit, trailing
+whitespace/newline checks, and a 50-character object-name limit across source
+and tests.
 
 When changing defaults or formulas, update:
 - tests
 - `2.CheatsheetV8.r`
 - `docs/DEFAULT_POLICIES.md`
-- changelog (`StatsPackage -1.0/NEWS.md`)
+- changelog (`StatsPackage/NEWS.md`)
 
 ## Commit guidance
 
@@ -68,6 +76,6 @@ Examples:
 ## Release notes
 
 For release-affecting changes, add a bullet under the current unreleased or next release section in:
-- `StatsPackage -1.0/NEWS.md`
+- `StatsPackage/NEWS.md`
 
 

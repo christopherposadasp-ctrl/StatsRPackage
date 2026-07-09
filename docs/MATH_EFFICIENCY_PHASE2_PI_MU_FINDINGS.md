@@ -58,9 +58,9 @@ The implementation preserves the Phase 1 public contract:
 The implementation remains aligned with:
 
 - `docs/DEFAULT_POLICIES.md`;
-- `StatsPackage -1.0/man/prediction_interval_functions.Rd`;
+- `StatsPackage/man/prediction_interval_functions.Rd`;
 - `README.md`;
-- `StatsPackage -1.0/vignettes/getting-started.Rmd`;
+- `StatsPackage/vignettes/getting-started.Rmd`;
 - `2.CheatsheetV8.r`.
 
 No documentation changes were needed because public behavior and documented
@@ -69,7 +69,7 @@ policy did not change.
 ## Test Changes
 
 Added a focused test in
-`StatsPackage -1.0/tests/testthat/test-prediction-intervals.R`:
+`StatsPackage/tests/testthat/test-prediction-intervals.R`:
 
 - verifies one-sided z and t intervals use the one-sided alpha-tail critical
   value;
@@ -83,9 +83,9 @@ No production code changes were made.
 
 - Independent `pi_mu()` formula audit script:
   passed 6 z/t two-sided and one-sided cases.
-- `devtools::test("StatsPackage -1.0", filter = "prediction")`:
+- `devtools::test("StatsPackage", filter = "prediction")`:
   35 passed, 0 failed, 0 warnings, 0 skipped.
-- `devtools::test("StatsPackage -1.0")`:
+- `devtools::test("StatsPackage")`:
   416 passed, 0 failed, 0 warnings, 0 skipped.
 
 The known local Windows R process-exit anomaly persisted after the

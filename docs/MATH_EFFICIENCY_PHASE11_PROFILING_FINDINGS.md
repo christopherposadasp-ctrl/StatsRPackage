@@ -29,7 +29,7 @@ far that degrees of freedom become nonpositive for a high-lambda raw sample.
 
 Profiling used:
 
-- `devtools::load_all("StatsPackage -1.0", quiet = TRUE)`
+- `devtools::load_all("StatsPackage", quiet = TRUE)`
 - package calls with `quiet = TRUE`
 - base R `system.time()`
 - attempted base R `Rprof()` and `summaryRprof()`

@@ -40,12 +40,12 @@ One production-code change was made during Phase 8: upper-tail probability calcu
 
 Phase 9 reconfirmed:
 
-- exported function count from `StatsPackage -1.0/NAMESPACE`: `29`;
+- exported function count from `StatsPackage/NAMESPACE`: `29`;
 - `docs/API_INDEX.md` covers all exported functions;
 - generated `.Rd` aliases cover all exported functions;
 - `2.CheatsheetV8.r` references all exported functions;
 - `README.md` links to the API index, default policies, vignette, and cheat-sheet QA instead of enumerating every export;
-- `StatsPackage -1.0/vignettes/getting-started.Rmd` remains a representative getting-started workflow and includes `pi_mu()`;
+- `StatsPackage/vignettes/getting-started.Rmd` remains a representative getting-started workflow and includes `pi_mu()`;
 - `pi_mu()` remains present in exports and user-facing docs.
 
 No README, vignette, generated `.Rd`, API index, default-policy, or cheat-sheet source changes were needed in Phase 9.
@@ -74,9 +74,9 @@ Only one production change was made during the audit:
 
 Files changed in that commit:
 
-- `StatsPackage -1.0/R/hypothesis-test-functions.R`
-- `StatsPackage -1.0/R/power-functions.R`
-- `StatsPackage -1.0/R/power-helpers.R`
+- `StatsPackage/R/hypothesis-test-functions.R`
+- `StatsPackage/R/power-functions.R`
+- `StatsPackage/R/power-helpers.R`
 
 The change replaced upper-tail subtraction with explicit upper-tail probability calls in affected hypothesis-test and power-function paths. No exported names, signatures, defaults, result fields, printed summaries, generated docs, or release tags changed.
 
@@ -100,7 +100,7 @@ No broad abstraction or cosmetic code expansion was added outside tests.
 Final full test suite:
 
 ```r
-devtools::test("StatsPackage -1.0")
+devtools::test("StatsPackage")
 ```
 
 Reported result:
@@ -125,7 +125,7 @@ Local process note: the successful `devtools::test()`, cheat-sheet audit, and po
 
 ## Non-Blocking Check Result
 
-The optional final `devtools::check("StatsPackage -1.0", document = FALSE, manual = FALSE)` retry remains environment-blocked locally.
+The optional final `devtools::check("StatsPackage", document = FALSE, manual = FALSE)` retry remains environment-blocked locally.
 
 Observed failure:
 

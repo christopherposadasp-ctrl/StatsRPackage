@@ -16,21 +16,23 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
-      COVERAGE_THRESHOLD: "65"
+      COVERAGE_THRESHOLD: "80"
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
 
       - name: Setup R
-        uses: r-lib/actions/setup-r@v2
+        uses: r-lib/actions/setup-r@929c772977a3a13c8733b363bf5a2f685c25dd91 # v2.9.0
         with:
           use-public-rspm: true
 
       - name: Install dependencies
-        uses: r-lib/actions/setup-r-dependencies@v2
+        uses: r-lib/actions/setup-r-dependencies@929c772977a3a13c8733b363bf5a2f685c25dd91 # v2.9.0
         with:
-          working-directory: StatsPackage -1.0
+          working-directory: StatsPackage
           extra-packages: |
             any::covr
             any::testthat
@@ -43,12 +45,12 @@ jobs:
           dir.create("qa", showWarnings = FALSE, recursive = TRUE)
           library(testthat)
           source_files <- list.files(
-            "StatsPackage -1.0/R",
+            "StatsPackage/R",
             pattern = "\\.[Rr]$",
             full.names = TRUE
           )
           test_files <- list.files(
-            "StatsPackage -1.0/tests/testthat",
+            "StatsPackage/tests/testthat",
             pattern = "\\.[Rr]$",
             full.names = TRUE
           )
@@ -68,7 +70,7 @@ jobs:
             numeric(1)
           )
           coverage_pct <- 100 * mean(vals > 0)
-          threshold <- as.numeric(Sys.getenv("COVERAGE_THRESHOLD", "65"))
+          threshold <- as.numeric(Sys.getenv("COVERAGE_THRESHOLD", "80"))
           summary_text <- sprintf(
             "Coverage: %.2f%%\nThreshold: %.2f%%\nTotal lines: %d\nCovered lines: %d\n",
             coverage_pct,
@@ -91,7 +93,7 @@ jobs:
 
       - name: Upload coverage artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: coverage-report
           if-no-files-found: warn

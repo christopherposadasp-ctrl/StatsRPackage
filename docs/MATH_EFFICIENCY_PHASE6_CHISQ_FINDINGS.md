@@ -24,7 +24,7 @@ No mathematical defects were found.
 
 ## Tests Added
 
-Focused tests were added in `StatsPackage -1.0/tests/testthat/test-chisq-functions.R` for:
+Focused tests were added in `StatsPackage/tests/testthat/test-chisq-functions.R` for:
 
 - explicit labels, stored observed proportions, critical values, and rejection-region shape in `chisq_gof_probs()`;
 - generated default one-way GOF labels;
@@ -60,8 +60,8 @@ Named one-way observed vectors are currently converted to generated numeric labe
 Commands run:
 
 ```r
-devtools::test("StatsPackage -1.0", filter = "chisq")
-devtools::test("StatsPackage -1.0")
+devtools::test("StatsPackage", filter = "chisq")
+devtools::test("StatsPackage")
 ```
 
 Reported results:

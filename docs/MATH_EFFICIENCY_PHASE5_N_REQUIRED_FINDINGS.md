@@ -27,7 +27,7 @@ No mathematical or minimality defects were found.
 
 ## Tests Added
 
-Focused tests were added in `StatsPackage -1.0/tests/testthat/test-n-required.R` for:
+Focused tests were added in `StatsPackage/tests/testthat/test-n-required.R` for:
 
 - `n_required_from_power()` returning `n_min` when already sufficient;
 - unreachable target and invalid vector-valued `power_at_n()` errors;
@@ -59,8 +59,8 @@ The Phase 5 audit preserved:
 Commands run:
 
 ```r
-devtools::test("StatsPackage -1.0", filter = "n-required")
-devtools::test("StatsPackage -1.0")
+devtools::test("StatsPackage", filter = "n-required")
+devtools::test("StatsPackage")
 ```
 
 Reported results:

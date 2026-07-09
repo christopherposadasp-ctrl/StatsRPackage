@@ -114,3 +114,9 @@ and optional printed summaries controlled by \code{digits} and \code{quiet}.
 \item \code{var_test_chisq()}: Chi-square or F test for variances.
 
 }}
+\examples{
+z_test_mu(xbar = 101, mu0 = 100, sigma = 15, n = 50, quiet = TRUE)
+t_test_mu(xbar = 5.4, mu0 = 5, s = 1.2, n = 20, quiet = TRUE)
+p_test(x = 21, n = 100, p0 = 0.2, quiet = TRUE)
+var_test_chisq(s = 4.2, n = 12, sigma0 = 5, quiet = TRUE)
+}

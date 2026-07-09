@@ -12,6 +12,10 @@
 #' @param digits Integer number of decimal places used only for printed output.
 #' @param quiet Logical; if `TRUE`, suppress printed output.
 #' @param excess Logical; for `kurt()`, whether to report excess kurtosis instead of Pearson kurtosis.
+#' @examples
+#' sample_values <- c(1, 1, 2, 2, 3, 9)
+#' skew(sample_values, quiet = TRUE)
+#' kurt(sample_values, excess = TRUE, quiet = TRUE)
 #' @name shape_functions
 NULL
 
@@ -230,7 +234,10 @@ skew <- function(x,
       "G1 = sqrt(n(n - 1)) / (n - 2) * g1"
     },
     direction = interp$direction,
-    reference = "0 indicates symmetry; positive values indicate right-skewness and negative values indicate left-skewness."
+    reference = paste(
+      "0 indicates symmetry; positive values indicate right-skewness",
+      "and negative values indicate left-skewness."
+    )
   )
 
   if (!quiet) {
@@ -317,9 +324,15 @@ kurt <- function(x,
     },
     shape = interp$shape,
     reference = if (excess) {
-      "0 indicates tail weight similar to normal; positive values indicate heavier tails and negative values indicate lighter tails."
+      paste(
+        "0 indicates tail weight similar to normal; positive values indicate heavier tails",
+        "and negative values indicate lighter tails."
+      )
     } else {
-      "3 indicates tail weight similar to normal; values above 3 indicate heavier tails and values below 3 indicate lighter tails."
+      paste(
+        "3 indicates tail weight similar to normal; values above 3 indicate heavier tails",
+        "and values below 3 indicate lighter tails."
+      )
     },
     pearson_kurtosis = g2_pearson,
     excess_kurtosis = g2_excess

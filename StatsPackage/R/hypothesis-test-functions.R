@@ -23,6 +23,11 @@
 #' @param pooled Logical; for two-sample proportion tests, whether to use pooled standard errors.
 #' @param sigma0 Null-hypothesis standard deviation for the chi-square variance test.
 #' @param ratio0 Null-hypothesis variance ratio for the F test.
+#' @examples
+#' z_test_mu(xbar = 101, mu0 = 100, sigma = 15, n = 50, quiet = TRUE)
+#' t_test_mu(xbar = 5.4, mu0 = 5, s = 1.2, n = 20, quiet = TRUE)
+#' p_test(x = 21, n = 100, p0 = 0.2, quiet = TRUE)
+#' var_test_chisq(s = 4.2, n = 12, sigma0 = 5, quiet = TRUE)
 #' @name hypothesis_test_functions
 NULL
 
@@ -1050,4 +1055,3 @@ var_test_chisq <- function(s, n, sigma0 = NULL, ratio0 = 1,
 
   invisible(out)
 }
-

@@ -1,10 +1,11 @@
 root <- normalizePath(".", winslash = "/", mustWork = TRUE)
-pkg_dir <- file.path(root, "StatsPackage -1.0")
+pkg_dir <- file.path(root, "StatsPackage")
 qa_dir <- file.path(root, "qa")
 log_path <- file.path(qa_dir, "smoke_test_output.txt")
 results_path <- file.path(qa_dir, "smoke_test_results.csv")
 
 dir.create(qa_dir, showWarnings = FALSE, recursive = TRUE)
+unlink(c(log_path, results_path), force = TRUE)
 
 sink(log_path, split = FALSE)
 on.exit({
@@ -17,26 +18,47 @@ cat("Package directory:", pkg_dir, "\n")
 cat("Log path:", log_path, "\n")
 cat("Results path:", results_path, "\n\n")
 
-if (!file.exists(pkg_dir)) {
+if (!dir.exists(pkg_dir)) {
   stop("Local package directory was not found: ", pkg_dir)
 }
 
-local_version <- package_version(read.dcf(file.path(pkg_dir, "DESCRIPTION"))[1, "Version"])
-installed_version <- if (requireNamespace("StatsPackage", quietly = TRUE)) {
-  utils::packageVersion("StatsPackage")
-} else {
-  NULL
+if (!requireNamespace("devtools", quietly = TRUE)) {
+  stop("Install devtools to run the release smoke test.")
 }
 
-if (is.null(installed_version) || installed_version < local_version) {
-  if (!requireNamespace("devtools", quietly = TRUE)) {
-    stop("Install devtools to install the local StatsPackage version required for this smoke test.")
-  }
-  cat("Installing StatsPackage from local package directory...\n")
-  devtools::install(pkg_dir, upgrade = FALSE, quiet = TRUE, dependencies = FALSE)
+local_version <- numeric_version(
+  read.dcf(file.path(pkg_dir, "DESCRIPTION"))[1, "Version"]
+)
+smoke_lib <- tempfile("stats-package-smoke-lib-")
+dir.create(smoke_lib, recursive = TRUE)
+old_lib_paths <- .libPaths()
+.libPaths(c(smoke_lib, old_lib_paths))
+on.exit({
+  .libPaths(old_lib_paths)
+  unlink(smoke_lib, recursive = TRUE, force = TRUE)
+}, add = TRUE)
+
+if ("package:StatsPackage" %in% search()) {
+  detach("package:StatsPackage", unload = TRUE, character.only = TRUE)
+} else if ("StatsPackage" %in% loadedNamespaces()) {
+  unloadNamespace("StatsPackage")
 }
 
-suppressPackageStartupMessages(library(StatsPackage))
+cat("Installing the exact local StatsPackage source into an isolated library...\n")
+devtools::install(
+  pkg_dir,
+  upgrade = "never",
+  quiet = TRUE,
+  dependencies = FALSE
+)
+suppressPackageStartupMessages(
+  library("StatsPackage", lib.loc = smoke_lib, character.only = TRUE)
+)
+
+if (utils::packageVersion("StatsPackage") != local_version) {
+  stop("The smoke test did not load the exact local package version.")
+}
+cat("Loaded local package version:", as.character(local_version), "\n\n")
 
 results <- data.frame(
   check = character(),

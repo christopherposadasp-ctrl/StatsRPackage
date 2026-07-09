@@ -123,3 +123,10 @@ and optional printed summaries controlled by \code{digits} and \code{quiet}.
 \item \code{power_var_ratio_F()}: Power for two-sample F tests of a variance ratio.
 
 }}
+\examples{
+power_z_mu(mu_a = 10.4, mu0 = 10, sigma = 0.5, n = 20, quiet = TRUE)
+power_t_mu(mu_a = 5.4, mu0 = 5, sigma_true = 1.2, n = 20, quiet = TRUE)
+power_p_z(p_a = 0.3, p0 = 0.25, n = 200, quiet = TRUE)
+power_var_chisq(sigma_a = 7, sigma0 = 6, n = 25, quiet = TRUE)
+power_var_ratio_F(sigma_a = c(3, 5), n = c(25, 25), quiet = TRUE)
+}

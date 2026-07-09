@@ -15,18 +15,29 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+
+      - name: Verify tag matches package version
+        shell: bash
+        run: |
+          package_version="$(awk -F ': ' '$1 == "Version" { print $2 }' StatsPackage/DESCRIPTION)"
+          if [[ "${GITHUB_REF_NAME}" != "${package_version}" ]]; then
+            echo "Tag ${GITHUB_REF_NAME} does not match package version ${package_version}."
+            exit 1
+          fi
 
       - name: Setup R
-        uses: r-lib/actions/setup-r@v2
+        uses: r-lib/actions/setup-r@929c772977a3a13c8733b363bf5a2f685c25dd91 # v2.9.0
         with:
           r-version: release
           use-public-rspm: true
 
       - name: Install R dependencies
-        uses: r-lib/actions/setup-r-dependencies@v2
+        uses: r-lib/actions/setup-r-dependencies@929c772977a3a13c8733b363bf5a2f685c25dd91 # v2.9.0
         with:
-          working-directory: StatsPackage -1.0
+          working-directory: StatsPackage
           extra-packages: |
             any::devtools
             any::remotes
@@ -36,21 +47,30 @@ jobs:
           needs: check
 
       - name: Run tests
-        working-directory: StatsPackage -1.0
+        working-directory: StatsPackage
         run: Rscript -e "devtools::test('.')"
 
+      - name: Verify generated documentation
+        working-directory: StatsPackage
+        run: |
+          Rscript -e "devtools::document('.')"
+          git diff --exit-code -- DESCRIPTION NAMESPACE man
+
       - name: Run check
-        working-directory: StatsPackage -1.0
-        run: Rscript -e "devtools::check('.', error_on = 'error', args = c('--no-manual'))"
+        working-directory: StatsPackage
+        run: Rscript -e "devtools::check('.', error_on = 'note', args = c('--no-manual'))"
 
       - name: Run cheat-sheet audit
         run: Rscript scripts/qa_cheatsheet_audit.R
+
+      - name: Run release smoke test
+        run: Rscript scripts/qa_smoke_release.R
 
       - name: Build source package
         shell: Rscript {0}
         run: |
           dir.create("dist", showWarnings = FALSE, recursive = TRUE)
-          built <- devtools::build("StatsPackage -1.0", path = "dist")
+          built <- devtools::build("StatsPackage", path = "dist")
           cat("Built package:", built, "\n")
 
       - name: Build checksums
@@ -60,7 +80,7 @@ jobs:
 
       - name: Upload workflow artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: release-assets
           if-no-files-found: warn
@@ -68,9 +88,11 @@ jobs:
             dist/*
             qa/cheatsheet_audit_output.txt
             qa/cheatsheet_audit_issues.csv
+            qa/smoke_test_output.txt
+            qa/smoke_test_results.csv
 
       - name: Publish GitHub release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
           generate_release_notes: true
           files: |
