@@ -47,7 +47,6 @@ if ("package:StatsPackage" %in% search()) {
 cat("Installing the exact local StatsPackage source into an isolated library...\n")
 devtools::install(
   pkg_dir,
-  upgrade = "never",
   quiet = TRUE,
   dependencies = FALSE
 )

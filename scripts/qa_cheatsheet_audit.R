@@ -52,7 +52,6 @@ if ("package:StatsPackage" %in% search()) {
 
 devtools::install(
   pkg_dir,
-  upgrade = "never",
   quiet = TRUE,
   dependencies = FALSE
 )
