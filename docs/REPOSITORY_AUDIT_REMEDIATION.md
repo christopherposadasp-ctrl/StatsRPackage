@@ -42,5 +42,6 @@ build and note-clean `R CMD check`.
 
 ## Hosted Validation
 
-Pending pull-request CI. Release publication and repository housekeeping occur
-only after all required checks pass.
+Pull request #15 is the release authority for the complete hosted matrix.
+Release publication and repository housekeeping occur only after all required
+checks pass and the pull request is merged.
